@@ -1,20 +1,7 @@
 "use client";
 
 import Image from "next/image";
-
-interface GalleryImage {
-  id: string;
-  title: string | null;
-  imageUrl: string;
-  description: string | null;
-}
-
-interface GalleryCardProps {
-  image: GalleryImage;
-  isLoaded: boolean;
-  onLoad: (imageId: string) => void;
-  onClick: () => void;
-}
+import { GalleryCardProps } from "@/lib/types";
 
 export function GalleryCard({ image, onLoad, onClick }: GalleryCardProps) {
   return (

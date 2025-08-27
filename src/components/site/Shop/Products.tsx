@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductCard } from "./ProductCard";
+import { ProductCard } from "./_components/ProductCard";
 import Image from "next/image";
 import {
   Carousel,
@@ -10,14 +10,14 @@ import {
   CarouselPrevious,
 } from "@/components/ui-shadcn/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { Product } from "@/types";
+import { Product } from "@/lib/types";
 
 interface ProductGridProps {
   products: Product[];
   isVisible?: boolean;
 }
 
-export function ProductGrid({
+export function Products({
   products = [],
   isVisible = true,
 }: ProductGridProps) {

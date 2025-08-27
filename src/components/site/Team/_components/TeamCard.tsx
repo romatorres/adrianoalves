@@ -2,24 +2,9 @@
 
 import Image from "next/image";
 import { FaInstagram, FaFacebook, FaLinkedin } from "react-icons/fa";
+import { TeamMemberProps } from "@/lib/types";
 
-export interface TeamMember {
-  id: string;
-  name: string;
-  role: string;
-  imageUrl: string;
-  bio?: string | null;
-  instagram?: string | null;
-  active: boolean;
-  facebook?: string | null;
-  linkedin?: string | null;
-}
-
-interface TeamMemberProps {
-  member: TeamMember;
-}
-
-const TeamMember = ({ member }: TeamMemberProps) => {
+export default function TeamMember({ member }: TeamMemberProps) {
   return (
     <div className="w-full mx-auto relative group h-[440px] rounded-lg overflow-hidden">
       {/* Imagem de fundo */}
@@ -91,6 +76,4 @@ const TeamMember = ({ member }: TeamMemberProps) => {
       </div>
     </div>
   );
-};
-
-export default TeamMember;
+}

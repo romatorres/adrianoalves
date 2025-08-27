@@ -1,6 +1,6 @@
 "use client";
 
-import { ServiceCard } from "./ServiceCard";
+import { ServiceCard } from "./_components/ServiceCard";
 import Image from "next/image";
 import {
   Carousel,
@@ -10,14 +10,14 @@ import {
   CarouselPrevious,
 } from "@/components/ui-shadcn/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { Service } from "@/types";
+import { Service } from "@/lib/types";
 
 interface ServiceGridProps {
   services: Service[];
   isVisible?: boolean;
 }
 
-export function ServiceGrid({
+export function Services({
   services = [],
   isVisible = true,
 }: ServiceGridProps) {

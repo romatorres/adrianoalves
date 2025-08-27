@@ -22,7 +22,7 @@ export function ProductCard({ product }: { product: Product }) {
   }).format(product.price);
 
   return (
-    <div className="mx-2 rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gray-04">
+    <div className="mx-2 rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gray04">
       <div className="p-2">
         <div className="relative h-56">
           <Image

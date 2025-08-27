@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { GalleryGridProps } from "@/lib/types";
 import { ImageModal } from "../ImageModal/ImageModal";
-import { GalleryCard } from "./GalleryCard";
+import { GalleryCard } from "./_components/GalleryCard";
 import {
   Carousel,
   CarouselContent,
@@ -13,19 +14,7 @@ import {
 } from "@/components/ui-shadcn/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
-interface GalleryImage {
-  id: string;
-  title: string | null;
-  imageUrl: string;
-  description: string | null;
-}
-
-interface GalleryGridProps {
-  images: GalleryImage[];
-  isVisible?: boolean;
-}
-
-export function GalleryGrid({
+export default function Gallery({
   images = [],
   isVisible = true,
 }: GalleryGridProps) {

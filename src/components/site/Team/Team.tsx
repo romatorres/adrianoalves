@@ -1,14 +1,15 @@
 "use client";
 
-import TeamMember, { TeamMember as TeamMemberType } from "./TeamCard";
+import { Team as TeamMemberType } from "@/lib/types";
 import Image from "next/image";
+import TeamMember from "./_components/TeamCard";
 
 interface TeamGridProps {
   members: TeamMemberType[];
   isVisible?: boolean;
 }
 
-const TeamGrid = ({ members, isVisible = true }: TeamGridProps) => {
+export default function Team({ members, isVisible = true }: TeamGridProps) {
   if (!isVisible) return null;
 
   return (
@@ -57,6 +58,4 @@ const TeamGrid = ({ members, isVisible = true }: TeamGridProps) => {
       </div>
     </section>
   );
-};
-
-export default TeamGrid;
+}

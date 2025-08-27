@@ -2,15 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-
-interface Service {
-  id: string;
-  name: string;
-  description: string | null;
-  price: number;
-  imageUrl: string | null;
-  duration: number;
-}
+import { Service } from "@/lib/types";
 
 export function ServiceCard({ service }: { service: Service }) {
   const formattedPrice = (price: number) => {
@@ -21,7 +13,7 @@ export function ServiceCard({ service }: { service: Service }) {
   };
 
   return (
-    <section className="mx-2 rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gray-04">
+    <section className="mx-2 rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gray04">
       <div className="p-2">
         <div className="relative h-56 w-full">
           <Image

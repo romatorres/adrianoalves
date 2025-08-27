@@ -1,5 +1,5 @@
-import { Promotion } from "@/app/dashboard/promotions/types";
-import { PromotionCard } from "./PromotionCard";
+import { Promotion } from "@/lib/types";
+import { PromotionCard } from "./_components/PromotionCard";
 import Image from "next/image";
 
 interface PromotionGridProps {
@@ -7,7 +7,7 @@ interface PromotionGridProps {
   isVisible?: boolean;
 }
 
-export function PromotionGrid({
+export function Promotions({
   promotions,
   isVisible = true,
 }: PromotionGridProps) {
