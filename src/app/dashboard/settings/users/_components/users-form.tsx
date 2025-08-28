@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 const signupSchema = z
   .object({
@@ -39,10 +40,14 @@ const signupSchema = z
 
 type SignupFormValues = z.infer<typeof signupSchema>;
 
-export function UsersForm() {
+interface UsersFormProps {
+  onCancel?: () => void;
+}
+
+export function UsersForm({ onCancel }: UsersFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const form = useForm<SignupFormValues>({
@@ -56,7 +61,7 @@ export function UsersForm() {
   });
 
   async function onSubmit(formData: SignupFormValues) {
-    const {} = await authClient.signUp.email(
+    await authClient.signUp.email(
       {
         name: formData.name,
         email: formData.email,
@@ -64,18 +69,38 @@ export function UsersForm() {
       },
       {
         onRequest: () => {
-          //show loading
+          setIsLoading(true);
         },
         onSuccess: () => {
+          setIsLoading(false);
+
+          if (typeof toast !== "undefined") {
+            toast.success("Usuário cadastrado com sucesso!");
+          }
+
+          form.reset();
           router.replace("/dashboard/settings/users");
         },
         onError: (ctx) => {
-          // display the error message
-          alert(ctx.error.message);
+          setIsLoading(false);
+          const errorMessage = ctx.error.message || "Erro ao cadastrar usuário";
+          if (typeof toast !== "undefined") {
+            toast.error(errorMessage);
+          } else {
+            alert(errorMessage);
+          }
         },
       }
     );
   }
+
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+    } else {
+      router.replace("/dashboard/settings/users");
+    }
+  };
 
   return (
     <div className="bg-amber-100 shadow overflow-hidden sm:rounded-md">
@@ -199,16 +224,27 @@ export function UsersForm() {
               )}
             />
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {form.formState.isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Cadastrando...
-                </>
-              ) : (
-                "Cadastrar"
-              )}
-            </Button>
+            <div className="flex items-center md:justify-end justify-center space-x-4 pt-6">
+              <Button
+                type="button"
+                variant={"secondary"}
+                onClick={handleCancel}
+                disabled={isLoading}
+              >
+                Cancelar
+              </Button>
+
+              <Button type="submit" variant={"default"} disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Cadastrando...
+                  </>
+                ) : (
+                  "Cadastrar"
+                )}
+              </Button>
+            </div>
           </form>
         </Form>
       </div>
