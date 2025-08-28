@@ -42,7 +42,7 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 export function UsersForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const router = useRouter();
 
   const form = useForm<SignupFormValues>({
@@ -63,10 +63,10 @@ export function UsersForm() {
         password: formData.password,
       },
       {
-        onRequest: (ctx) => {
+        onRequest: () => {
           //show loading
         },
-        onSuccess: (ctx) => {
+        onSuccess: () => {
           router.replace("/dashboard/settings/users");
         },
         onError: (ctx) => {

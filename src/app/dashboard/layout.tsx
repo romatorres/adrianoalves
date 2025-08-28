@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Sidebar from "@/app/dashboard/_components/Sidebar";
-import Loading from "./loading";
+import Loading from "../../components/ui/loading";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
