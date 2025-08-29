@@ -115,9 +115,9 @@ export default function Sidebar() {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="h-full flex flex-col px-3 py-0 overflow-y-auto bg-gray04 border-r w-64">
+        <div className="h-full flex flex-col px-3 py-0 overflow-y-auto bg-amber-100 border-r w-64">
           {/* Perfil do usuário */}
-          <div className="mb-6 p-4 border-b flex justify-end md:justify-start ">
+          <div className="mb-6 p-4 border-b border-gray01 flex justify-end md:justify-start ">
             <div className="flex flex-row items-center gap-3">
               <div className="h-9 w-9 rounded-full bg-gray01 flex items-center justify-center">
                 <span className="text-xl font-medium text-white">
@@ -146,7 +146,7 @@ export default function Sidebar() {
                     <div>
                       <button
                         onClick={() => toggleSubmenu(item.name)}
-                        className={`w-full flex items-center justify-between p-2 rounded-lg hover:bg-amber-100 text-gray-01`}
+                        className={`w-full flex items-center justify-between p-2 rounded-lg hover:bg-gray04 text-gray-01`}
                       >
                         <div className="flex items-center">
                           <item.icon className="w-6 h-6 mr-2" />
@@ -166,9 +166,9 @@ export default function Sidebar() {
                               <li key={subItem.name}>
                                 <Link
                                   href={subItem.href}
-                                  className={`flex items-center p-2 rounded-lg hover:bg-amber-100 ${
+                                  className={`flex items-center p-2 rounded-lg hover:bg-gray04 ${
                                     isSubItemActive
-                                      ? "bg-amber-100 text-background"
+                                      ? "bg-gray04 text-background"
                                       : "text-gray-01"
                                   }`}
                                   onClick={() => setIsSidebarOpen(false)}
@@ -185,7 +185,7 @@ export default function Sidebar() {
                   ) : (
                     <Link
                       href={item.href!}
-                      className={`flex items-center p-2 rounded-lg hover:bg-amber-100 ${
+                      className={`flex items-center p-2 rounded-lg hover:bg-gray04 ${
                         isActive
                           ? "bg-amber-100 text-background"
                           : "text-gray-01"
@@ -202,7 +202,7 @@ export default function Sidebar() {
           </ul>
 
           {/* Botão de logout */}
-          <div className="border-t py-4 flex-shrink-0">
+          <div className="border-t border-gray01 py-4 flex-shrink-0">
             <button
               onClick={handleLogout}
               className="w-full flex items-center p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors cursor-pointer"
