@@ -6,6 +6,17 @@ import Link from "next/link";
 
 export default async function Users() {
   const users = await getUsers();
+
+  /* const handleEdit = (userId: string) => {
+    // Implementar lógica de edição
+    console.log("Editando usuário:", userId);
+  };
+
+  const handleDelete = (userId: string) => {
+    // Implementar lógica de exclusão
+    console.log("Excluindo usuário:", userId);
+  }; */
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="w-full space-y-8">
