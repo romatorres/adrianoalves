@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Edit, Mail, Plus, Trash2, User } from "lucide-react";
-import getUsers from "./action";
+import { getUsers } from "./action";
 import { UserType } from "@/lib/types";
 import Link from "next/link";
 
@@ -103,7 +103,7 @@ export default async function Users() {
           </table>
         </div>
 
-        {/* Mobile Cards - Visible only on mobile */}
+        {/* Mobile Cards - Visivel somente mobile */}
         <div className="md:hidden space-y-3">
           {users.map((user: UserType) => (
             <div
@@ -157,7 +157,7 @@ export default async function Users() {
           ))}
         </div>
 
-        {/* Empty State */}
+        {/* Estado vazio */}
         {users.length === 0 && (
           <div className="text-center py-12">
             <User className="mx-auto h-12 w-12 text-gray-400" />
