@@ -20,15 +20,18 @@ export default async function Users() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="w-full space-y-8">
-        <div className="flex items-center justify-between">
+        <div className="flex md:flex-row flex-col md:items-center items-start md:justify-between justify-center md:gap-0 gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Usuários</h1>
             <p className="text-gray-600 mt-1">
               Gerencie todos os usuários do sistema
             </p>
           </div>
-          <Link href={"/dashboard/settings/users/new/"}>
-            <Button>
+          <Link
+            href={"/dashboard/settings/users/new/"}
+            className="md:w-fit w-full"
+          >
+            <Button className="w-full">
               <span>
                 <Plus />
               </span>
