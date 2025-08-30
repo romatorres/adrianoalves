@@ -15,7 +15,7 @@ export default function newUser() {
             </p>
           </div>
           <div>
-            <Link href="/users">
+            <Link href="/dashboard/settings/users">
               <Button
                 variant="ghost"
                 className="mb-4 text-gray01 hover:text-gray-800"

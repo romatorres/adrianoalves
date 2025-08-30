@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,8 +19,10 @@ import {
 } from "@/components/ui/form";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { UserType } from "@/lib/types";
 
-const signupSchema = z
+// Schema for creating a user
+const createSchema = z
   .object({
     name: z
       .string()
@@ -38,60 +40,126 @@ const signupSchema = z
     path: ["confirmPassword"],
   });
 
-type SignupFormValues = z.infer<typeof signupSchema>;
+// Schema for editing a user
+const editSchema = z
+  .object({
+    name: z
+      .string()
+      .min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
+    email: z.string().email({ message: "Email inválido" }),
+    password: z
+      .string()
+      .min(8, { message: "A nova senha deve ter pelo menos 8 caracteres" })
+      .optional()
+      .or(z.literal("")),
+    confirmPassword: z.string().optional().or(z.literal("")),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "As senhas não coincidem",
+    path: ["confirmPassword"],
+  });
 
 interface UsersFormProps {
+  user?: UserType | null;
+  onSuccess?: () => void;
   onCancel?: () => void;
 }
 
-export function UsersForm({ onCancel }: UsersFormProps) {
+export function UsersForm({ user, onSuccess, onCancel }: UsersFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const isEditMode = !!user;
 
-  const form = useForm<SignupFormValues>({
-    resolver: zodResolver(signupSchema),
+  const formSchema = isEditMode ? editSchema : createSchema;
+  type FormValues = z.infer<typeof formSchema>;
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      name: user?.name || "",
+      email: user?.email || "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  async function onSubmit(formData: SignupFormValues) {
-    await authClient.signUp.email(
-      {
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        name: user.name,
+        email: user.email,
+        password: "",
+        confirmPassword: "",
+      });
+    }
+  }, [user, form]);
+
+  async function onSubmit(formData: FormValues) {
+    setIsLoading(true);
+
+    if (isEditMode && user) {
+      // Update user
+      const updateData: { name: string; email: string; password?: string } = {
         name: formData.name,
         email: formData.email,
-        password: formData.password,
-      },
-      {
-        onRequest: () => {
-          setIsLoading(true);
-        },
-        onSuccess: () => {
-          setIsLoading(false);
+      };
 
-          if (typeof toast !== "undefined") {
-            toast.success("Usuário cadastrado com sucesso!");
-          }
-
-          form.reset();
-          router.replace("/dashboard/settings/users");
-        },
-        onError: (ctx) => {
-          setIsLoading(false);
-          const errorMessage = ctx.error.message || "Erro ao cadastrar usuário";
-          if (typeof toast !== "undefined") {
-            toast.error(errorMessage);
-          } else {
-            alert(errorMessage);
-          }
-        },
+      if (formData.password) {
+        updateData.password = formData.password;
       }
-    );
+
+      try {
+        const res = await fetch(`/api/auth/users/${user.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updateData),
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.message || "Erro ao atualizar usuário");
+        }
+
+        toast.success("Usuário atualizado com sucesso!");
+        if (onSuccess) {
+          onSuccess();
+        }
+      } catch (error: any) {
+        toast.error(error.message || "Ocorreu um erro inesperado.");
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      // Create user
+      await authClient.signUp.email(
+        {
+          name: formData.name,
+          email: formData.email,
+          password: (formData as z.infer<typeof createSchema>).password,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Usuário cadastrado com sucesso!");
+            form.reset();
+            if (onSuccess) {
+              onSuccess();
+            } else {
+              router.replace("/dashboard/settings/users");
+            }
+          },
+          onError: (ctx) => {
+            const errorMessage =
+              ctx.error.message || "Erro ao cadastrar usuário";
+            toast.error(errorMessage);
+          },
+          onSettled: () => {
+            setIsLoading(false);
+          },
+        }
+      );
+    }
   }
 
   const handleCancel = () => {
@@ -103,10 +171,14 @@ export function UsersForm({ onCancel }: UsersFormProps) {
   };
 
   return (
-    <div className="bg-amber-100 shadow overflow-hidden sm:rounded-md">
-      <div className="px-4 py-4 sm:px-6">
+    <div
+      className={
+        !isEditMode ? "bg-amber-100 shadow overflow-hidden sm:rounded-md" : ""
+      }
+    >
+      <div className={!isEditMode ? "px-4 py-4 sm:px-6" : "pt-4"}>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
@@ -115,7 +187,7 @@ export function UsersForm({ onCancel }: UsersFormProps) {
                   <FormLabel>Nome</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Seu nome completo"
+                      placeholder="Nome completo"
                       {...field}
                       disabled={isLoading}
                     />
@@ -149,7 +221,9 @@ export function UsersForm({ onCancel }: UsersFormProps) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Senha</FormLabel>
+                  <FormLabel>
+                    {isEditMode ? "Nova Senha (opcional)" : "Senha"}
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
@@ -171,9 +245,6 @@ export function UsersForm({ onCancel }: UsersFormProps) {
                         ) : (
                           <Eye className="h-4 w-4 text-muted-foreground" />
                         )}
-                        <span className="sr-only">
-                          {showPassword ? "Esconder senha" : "Mostrar senha"}
-                        </span>
                       </Button>
                     </div>
                   </FormControl>
@@ -182,47 +253,46 @@ export function UsersForm({ onCancel }: UsersFormProps) {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirmar Senha</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder="••••••••"
-                        type={showConfirmPassword ? "text" : "password"}
-                        {...field}
-                        disabled={isLoading}
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
-                        disabled={isLoading}
-                      >
-                        {showConfirmPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
-                        )}
-                        <span className="sr-only">
-                          {showConfirmPassword
-                            ? "Esconder senha"
-                            : "Mostrar senha"}
-                        </span>
-                      </Button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {(isEditMode ? form.watch("password") : true) && (
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {isEditMode ? "Confirmar Nova Senha" : "Confirmar Senha"}
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          placeholder="••••••••"
+                          type={showConfirmPassword ? "text" : "password"}
+                          {...field}
+                          disabled={isLoading}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                          disabled={isLoading}
+                        >
+                          {showConfirmPassword ? (
+                            <EyeOff className="h-4 w-4 text-muted-foreground" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <div className="flex items-center md:justify-end justify-center space-x-4 pt-6">
               <Button
@@ -238,8 +308,10 @@ export function UsersForm({ onCancel }: UsersFormProps) {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Cadastrando...
+                    {isEditMode ? "Salvando..." : "Cadastrando..."}
                   </>
+                ) : isEditMode ? (
+                  "Salvar Alterações"
                 ) : (
                   "Cadastrar"
                 )}
