@@ -19,6 +19,35 @@ export async function getUsers(): Promise<UserType[]> {
   }
 }
 
+export async function updateUser(
+  userId: string,
+  data: Partial<Omit<UserType, "id">>
+) {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/auth/users/${userId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.message || "Erro ao atualizar usuário");
+    }
+
+    revalidatePath("/dashboard/settings/users");
+    return { success: true, data: await res.json() };
+  } catch (error: any) {
+    console.error("Erro ao atualizar usuário:", error);
+    return { success: false, message: error.message };
+  }
+}
+
 export async function deleteUser(userId: string) {
   try {
     const res = await fetch(

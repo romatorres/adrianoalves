@@ -3,9 +3,10 @@ import { NextResponse } from "next/server";
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const { name, email, password } = await request.json();
     const updateData: { name?: string; email?: string; password?: string } = {};
 
@@ -21,7 +22,7 @@ export async function PUT(
     }
 
     const user = await prisma.user.update({
-      where: { id: params.id },
+      where: { id: id },
       data: updateData,
     });
     return NextResponse.json(user);
@@ -36,11 +37,12 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     await prisma.user.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
     return new NextResponse(null, { status: 204 });
   } catch (error) {

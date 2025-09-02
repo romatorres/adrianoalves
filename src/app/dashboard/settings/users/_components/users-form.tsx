@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { updateUser } from "../action";
 import { UserType } from "@/lib/types";
 
 // Schema for creating a user
@@ -110,27 +111,17 @@ export function UsersForm({ user, onSuccess, onCancel }: UsersFormProps) {
         updateData.password = formData.password;
       }
 
-      try {
-        const res = await fetch(`/api/auth/users/${user.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updateData),
-        });
+      const result = await updateUser(user.id, updateData);
 
-        if (!res.ok) {
-          const errorData = await res.json().catch(() => ({}));
-          throw new Error(errorData.message || "Erro ao atualizar usuário");
-        }
-
+      if (result.success) {
         toast.success("Usuário atualizado com sucesso!");
         if (onSuccess) {
           onSuccess();
         }
-      } catch (error: any) {
-        toast.error(error.message || "Ocorreu um erro inesperado.");
-      } finally {
-        setIsLoading(false);
+      } else {
+        toast.error(result.message || "Erro ao atualizar usuário");
       }
+      setIsLoading(false);
     } else {
       // Create user
       await authClient.signUp.email(
