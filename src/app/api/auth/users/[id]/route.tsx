@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { hashPassword } from "better-auth/crypto";
 
 export async function PUT(
   request: Request,
@@ -8,24 +9,35 @@ export async function PUT(
   try {
     const { id } = await context.params;
     const { name, email, password } = await request.json();
-    const updateData: { name?: string; email?: string; password?: string } = {};
 
-    if (name) {
-      updateData.name = name;
+    // 1. Atualizar dados do usuário (sem a senha)
+    const userUpdateData: { name?: string; email?: string } = {};
+    if (name) userUpdateData.name = name;
+    if (email) userUpdateData.email = email;
+
+    if (Object.keys(userUpdateData).length > 0) {
+      await prisma.user.update({
+        where: { id: id },
+        data: userUpdateData,
+      });
     }
-    if (email) {
-      updateData.email = email;
-    }
+
+    // 2. Atualizar a senha (se fornecida)
     if (password) {
-      // Se uma nova senha for fornecida, criptografá-la
-      updateData.password = password; // Aqui você pode adicionar a lógica de hash se necessário
+      const hashedPassword = await hashPassword(password);
+      await prisma.account.updateMany({
+        where: {
+          userId: id,
+          providerId: "credential",
+        },
+        data: { password: hashedPassword },
+      });
     }
 
-    const user = await prisma.user.update({
-      where: { id: id },
-      data: updateData,
-    });
-    return NextResponse.json(user);
+    // 3. Buscar e retornar o usuário atualizado
+    const updatedUser = await prisma.user.findUnique({ where: { id: id } });
+    return NextResponse.json(updatedUser);
+
   } catch (error) {
     console.error("Error editing user:", error);
     return NextResponse.json(
@@ -34,6 +46,7 @@ export async function PUT(
     );
   }
 }
+
 
 export async function DELETE(
   request: Request,

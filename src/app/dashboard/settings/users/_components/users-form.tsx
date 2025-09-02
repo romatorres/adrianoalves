@@ -107,7 +107,7 @@ export function UsersForm({ user, onSuccess, onCancel }: UsersFormProps) {
         email: formData.email,
       };
 
-      if (formData.password) {
+      if (formData.password && formData.password.length > 0) {
         updateData.password = formData.password;
       }
 
