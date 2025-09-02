@@ -1,31 +1,34 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { UserType } from "@/lib/types";
+import { Service } from "@/lib/types";
 
-export async function getUsers(): Promise<UserType[]> {
+export async function getServices(): Promise<Service[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/users`, {
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/auth/services`,
+      {
+        cache: "no-store",
+      }
+    );
     if (!res.ok) {
-      throw new Error("Erro ao buscar usuários");
+      throw new Error("Erro ao buscar serviços");
     }
     return await res.json();
   } catch (error) {
-    console.error("Erro ao buscar usuários:", error);
+    console.error("Erro ao buscar serviços:", error);
     // Em caso de erro, retorna um array vazio para não quebrar a UI
     return [];
   }
 }
 
-export async function updateUser(
-  userId: string,
-  data: Partial<Omit<UserType, "id">>
+export async function updateService(
+  serviceId: string,
+  data: Partial<Omit<Service, "id">>
 ) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/auth/users/${userId}`,
+      `${process.env.NEXT_PUBLIC_URL}/api/auth/services/${serviceId}`,
       {
         method: "PUT",
         headers: {
@@ -37,13 +40,13 @@ export async function updateUser(
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.message || "Erro ao atualizar usuário");
+      throw new Error(errorData.message || "Erro ao atualizar o serviço");
     }
 
-    revalidatePath("/dashboard/settings/users");
+    revalidatePath("/dashboard/services");
     return { success: true, data: await res.json() };
   } catch (error) {
-    console.error("Erro ao atualizar usuário:", error);
+    console.error("Erro ao atualizar o serviço:", error);
     if (error instanceof Error) {
       return { success: false, message: error.message };
     }
@@ -51,10 +54,10 @@ export async function updateUser(
   }
 }
 
-export async function deleteUser(userId: string) {
+export async function deleteService(serviceId: string) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/auth/users/${userId}`,
+      `${process.env.NEXT_PUBLIC_URL}/api/auth/services/${serviceId}`,
       {
         method: "DELETE",
       }
@@ -65,10 +68,10 @@ export async function deleteUser(userId: string) {
       throw new Error(errorData.message || "Erro ao excluir usuário");
     }
 
-    revalidatePath("/dashboard/settings/users");
-    return { success: true, data: await res.json() };
+    revalidatePath("/dashboard/services");
+    return { success: true };
   } catch (error) {
-    console.error("Erro ao deletar o usuário:", error);
+    console.error("Erro ao deletar o serviço:", error);
     if (error instanceof Error) {
       return { success: false, message: error.message };
     }
