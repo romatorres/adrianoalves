@@ -1,26 +1,28 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Decimal } from "@prisma/client/runtime/library";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { name, description, price, duration, imageUrl, active } = body;
 
-    if (!name || !description || !price || !duration) {
+    if (!name || !description || price === undefined || duration === undefined) {
       return NextResponse.json(
         { message: "Todos os campos são obrigatórios." },
         { status: 400 }
       );
     }
 
+    // Convert types for Prisma
     const newService = await prisma.service.create({
       data: {
         name,
         description,
-        price,
-        duration,
+        price: new Decimal(price), // Convert to Decimal
+        duration: parseInt(duration, 10), // Ensure integer
         imageUrl,
-        active,
+        active: Boolean(active),
       },
     });
 
@@ -47,7 +49,14 @@ export async function GET() {
         imageUrl: true,
       },
     });
-    return NextResponse.json(services);
+    
+    // Convert Decimal to number for JSON serialization
+    const serializedServices = services.map(service => ({
+      ...service,
+      price: service.price instanceof Decimal ? service.price.toNumber() : service.price,
+    }));
+    
+    return NextResponse.json(serializedServices);
   } catch (error) {
     console.error("Error fetching services:", error);
     return NextResponse.json(

@@ -19,12 +19,13 @@ export async function PUT(
       active?: boolean;
       imageUrl?: string | null;
     } = {};
-    if (name) serviceUpdateData.name = name;
-    if (description) serviceUpdateData.description = description;
-    if (price) serviceUpdateData.price = price;
-    if (duration) serviceUpdateData.duration = duration;
-    if (active) serviceUpdateData.active = active;
-    if (imageUrl) serviceUpdateData.imageUrl = imageUrl;
+
+    if (name !== undefined) serviceUpdateData.name = name;
+    if (description !== undefined) serviceUpdateData.description = description;
+    if (price !== undefined) serviceUpdateData.price = new Decimal(price); // Convert to Decimal
+    if (duration !== undefined) serviceUpdateData.duration = parseInt(duration, 10); // Ensure integer
+    if (active !== undefined) serviceUpdateData.active = Boolean(active);
+    if (imageUrl !== undefined) serviceUpdateData.imageUrl = imageUrl;
 
     if (Object.keys(serviceUpdateData).length > 0) {
       await prisma.service.update({
@@ -37,7 +38,14 @@ export async function PUT(
     const updatedService = await prisma.service.findUnique({
       where: { id: id },
     });
-    return NextResponse.json(updatedService);
+    
+    // Convert Decimal to number for JSON serialization
+    const serializedService = {
+      ...updatedService,
+      price: updatedService?.price instanceof Decimal ? updatedService.price.toNumber() : updatedService?.price,
+    };
+    
+    return NextResponse.json(serializedService);
   } catch (error) {
     console.error("Error editing service:", error);
     return NextResponse.json(

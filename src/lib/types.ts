@@ -19,9 +19,10 @@ export interface Service {
   id: string;
   name: string;
   description: string | null;
-  price: number;
+  price: number | { toNumber: () => number };
   imageUrl: string | null;
   duration: number;
+  active: boolean | undefined;
 }
 
 export interface Team {

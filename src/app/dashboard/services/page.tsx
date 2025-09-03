@@ -3,7 +3,7 @@
 import { useState, useEffect, useTransition } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Edit, Mail, Plus, Trash2, User } from "lucide-react";
+import { Edit, FileText, Plus, Trash2, User } from "lucide-react";
 
 import { Service } from "@/lib/types";
 import { getServices, deleteService } from "./action";
@@ -54,12 +54,12 @@ export default function Services() {
     startTransition(async () => {
       const result = await deleteService(selectedService.id);
       if (result.success) {
-        toast.success("Usuário excluído com sucesso!");
-        // Refetch users
-        const fetchedUsers = await getServices();
-        setServices(fetchedUsers);
+        toast.success("Serviço excluído com sucesso!");
+        // Refetch services
+        const fetchedServices = await getServices();
+        setServices(fetchedServices);
       } else {
-        toast.error(result.message || "Erro ao excluir usuário.");
+        toast.error(result.message || "Erro ao excluir serviço.");
       }
       setIsDeleteDialogOpen(false);
       setSelectedService(null);
@@ -69,7 +69,7 @@ export default function Services() {
   const handleUpdateSuccess = async () => {
     setIsEditDialogOpen(false);
     setSelectedService(null);
-    // Refetch users to show updated data
+    // Refetch services to show updated data
     setIsLoading(true);
     const fetchedServices = await getServices();
     setServices(fetchedServices);
@@ -89,20 +89,15 @@ export default function Services() {
       <div className="w-full space-y-8">
         <div className="flex md:flex-row flex-col md:items-center items-start md:justify-between justify-center md:gap-0 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Usuários</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Serviços</h1>
             <p className="text-gray-600 mt-1">
-              Gerencie todos os usuários do sistema
+              Gerencie todos os serviços do sistema
             </p>
           </div>
-          <Link
-            href={"/dashboard/settings/users/new/"}
-            className="md:w-fit w-full"
-          >
+          <Link href={"/dashboard/services/new/"} className="md:w-fit w-full">
             <Button className="w-full">
-              <span>
-                <Plus />
-              </span>
-              Usuário
+              <Plus className="mr-2 h-4 w-4" />
+              Novo Serviço
             </Button>
           </Link>
         </div>
@@ -116,7 +111,7 @@ export default function Services() {
                   Nome
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray04 uppercase tracking-wider">
-                  Email
+                  Descrição
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray04 uppercase tracking-wider">
                   Ações
@@ -192,7 +187,7 @@ export default function Services() {
                     </div>
                   </div>
                   <div className="flex items-center text-sm text-gray02 mb-3">
-                    <Mail className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <FileText className="h-4 w-4 mr-2 flex-shrink-0" />
                     <span className="truncate">{service.description}</span>
                   </div>
                 </div>
@@ -226,22 +221,22 @@ export default function Services() {
           <div className="text-center py-12">
             <User className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900">
-              Nenhum usuário encontrado
+              Nenhum serviço encontrado
             </h3>
             <p className="mt-1 text-sm text-gray-500">
-              Comece adicionando um novo usuário ao sistema.
+              Comece adicionando um novo serviço ao sistema.
             </p>
           </div>
         )}
       </div>
 
-      {/* Edit User Dialog */}
+      {/* Edit Service Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Editar Usuário</DialogTitle>
+            <DialogTitle>Editar Serviço</DialogTitle>
             <DialogDescription>
-              Faça alterações no perfil do usuário. Clique em salvar para
+              Faça alterações no serviço. Clique em salvar para
               aplicar.
             </DialogDescription>
           </DialogHeader>
@@ -259,7 +254,7 @@ export default function Services() {
           <DialogHeader>
             <DialogTitle>Confirmar Exclusão</DialogTitle>
             <DialogDescription>
-              Tem certeza que deseja excluir o usuário{" "}
+              Tem certeza que deseja excluir o serviço{" "}
               <strong>{selectedService?.name}</strong>? Esta ação não pode ser
               desfeita.
             </DialogDescription>

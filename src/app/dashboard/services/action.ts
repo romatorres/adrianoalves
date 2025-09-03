@@ -22,6 +22,35 @@ export async function getServices(): Promise<Service[]> {
   }
 }
 
+export async function createService(data: Omit<Service, "id">) {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/auth/services`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.message || "Erro ao criar o serviço");
+    }
+
+    revalidatePath("/dashboard/services");
+    return { success: true, data: await res.json() };
+  } catch (error) {
+    console.error("Erro ao criar o serviço:", error);
+    if (error instanceof Error) {
+      return { success: false, message: error.message };
+    }
+    return { success: false, message: "Ocorreu um erro desconhecido." };
+  }
+}
+
 export async function updateService(
   serviceId: string,
   data: Partial<Omit<Service, "id">>
@@ -65,7 +94,7 @@ export async function deleteService(serviceId: string) {
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({})); // Tenta pegar corpo do erro
-      throw new Error(errorData.message || "Erro ao excluir usuário");
+      throw new Error(errorData.message || "Erro ao excluir serviço");
     }
 
     revalidatePath("/dashboard/services");

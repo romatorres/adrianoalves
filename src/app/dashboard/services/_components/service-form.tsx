@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,48 +17,28 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
-import { updateService } from "../action";
+import { createService, updateService } from "../action";
 import { Service } from "@/lib/types";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 
-// Schema for creating a service
-const createSchema = z
-  .object({
-    name: z
-      .string()
-      .min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
-    email: z.string().email({ message: "Email inválido" }),
-    password: z
-      .string()
-      .min(8, { message: "A senha deve ter pelo menos 8 caracteres" }),
-    confirmPassword: z.string().min(8, {
-      message: "A confirmação de senha deve ter pelo menos 8 caracteres",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "As senhas não coincidem",
-    path: ["confirmPassword"],
-  });
+// Unified schema for creating and editing a service
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
+  description: z
+    .string()
+    .min(1, { message: "A descrição é obrigatória" })
+    .nullable(),
+  price: z.number().positive("Preço deve ser maior que zero"),
+  duration: z.number().positive("A duração deve ser maior que zero"),
+  imageUrl: z.string().url("URL da imagem inválida").optional().nullable(),
+  active: z.boolean(),
+});
 
-// Schema for editing a service
-const editSchema = z
-  .object({
-    name: z
-      .string()
-      .min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
-    email: z.string().email({ message: "Email inválido" }),
-    password: z
-      .string()
-      .min(8, { message: "A nova senha deve ter pelo menos 8 caracteres" })
-      .optional()
-      .or(z.literal("")),
-    confirmPassword: z.string().optional().or(z.literal("")),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "As senhas não coincidem",
-    path: ["confirmPassword"],
-  });
+type FormValues = z.infer<typeof formSchema>;
 
 interface ServicesFormProps {
   service?: Service | null;
@@ -71,20 +51,19 @@ export function ServicesForm({
   onSuccess,
   onCancel,
 }: ServicesFormProps) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const isEditMode = !!service;
 
-  const formSchema = isEditMode ? editSchema : createSchema;
-  type FormValues = z.infer<typeof formSchema>;
-
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: service?.name || "",
-      description: service?.description || "",
+      name: "",
+      description: "",
+      price: 0,
+      duration: 0,
+      imageUrl: "",
+      active: true,
     },
   });
 
@@ -93,6 +72,10 @@ export function ServicesForm({
       form.reset({
         name: service.name,
         description: service.description,
+        price: Number(service.price) || 0,
+        duration: service.duration || 0,
+        imageUrl: service.imageUrl,
+        active: service.active ?? true,
       });
     }
   }, [service, form]);
@@ -100,56 +83,42 @@ export function ServicesForm({
   async function onSubmit(formData: FormValues) {
     setIsLoading(true);
 
-    if (isEditMode && service) {
-      // Update user
-      const updateData: { name: string; email: string; password?: string } = {
-        name: formData.name,
-        email: formData.email,
-      };
+    // Certificar-se de que price e duration são números válidos
+    const dataToSend = {
+      ...formData,
+      price: Number(formData.price),
+      duration: Number(formData.duration),
+      imageUrl: formData.imageUrl ?? null,
+      description: formData.description ?? null,
+    };
 
-      if (formData.password && formData.password.length > 0) {
-        updateData.password = formData.password;
-      }
-
-      const result = await updateService(service.id, updateData);
-
-      if (result.success) {
-        toast.success("Usuário atualizado com sucesso!");
-        if (onSuccess) {
-          onSuccess();
+    try {
+      if (isEditMode && service) {
+        const result = await updateService(service.id, dataToSend);
+        if (result.success) {
+          toast.success("Serviço atualizado com sucesso!");
+          if (onSuccess) onSuccess();
+        } else {
+          toast.error(result.message || "Erro ao atualizar serviço");
         }
       } else {
-        toast.error(result.message || "Erro ao atualizar usuário");
-      }
-      setIsLoading(false);
-    } else {
-      // Create user
-      await authClient.signUp.email(
-        {
-          name: formData.name,
-          email: formData.email,
-          password: (formData as z.infer<typeof createSchema>).password,
-        },
-        {
-          onSuccess: () => {
-            toast.success("Usuário cadastrado com sucesso!");
-            form.reset();
-            if (onSuccess) {
-              onSuccess();
-            } else {
-              router.replace("/dashboard/settings/users");
-            }
-          },
-          onError: (ctx) => {
-            const errorMessage =
-              ctx.error.message || "Erro ao cadastrar usuário";
-            toast.error(errorMessage);
-          },
-          onSettled: () => {
-            setIsLoading(false);
-          },
+        const result = await createService(dataToSend);
+        if (result.success) {
+          toast.success("Serviço cadastrado com sucesso!");
+          form.reset();
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            router.replace("/dashboard/services");
+          }
+        } else {
+          toast.error(result.message || "Erro ao cadastrar serviço");
         }
-      );
+      }
+    } catch {
+      toast.error("Ocorreu um erro inesperado.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -157,7 +126,7 @@ export function ServicesForm({
     if (onCancel) {
       onCancel();
     } else {
-      router.replace("/dashboard/settings/users");
+      router.replace("/dashboard/services");
     }
   };
 
@@ -175,10 +144,10 @@ export function ServicesForm({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nome</FormLabel>
+                  <FormLabel>Nome do Serviço</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Nome completo"
+                      placeholder="Ex: Corte de Cabelo"
                       {...field}
                       disabled={isLoading}
                     />
@@ -190,15 +159,15 @@ export function ServicesForm({
 
             <FormField
               control={form.control}
-              name="email"
+              name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="seu@email.com"
-                      type="email"
+                    <Textarea
+                      placeholder="Descreva o serviço..."
                       {...field}
+                      value={field.value ?? ""} // Handle null value
                       disabled={isLoading}
                     />
                   </FormControl>
@@ -207,83 +176,87 @@ export function ServicesForm({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {isEditMode ? "Nova Senha (opcional)" : "Senha"}
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Preço (R$)</FormLabel>
+                    <FormControl>
                       <Input
-                        placeholder="••••••••"
-                        type={showPassword ? "text" : "password"}
+                        type="number"
+                        step="0.01"
+                        placeholder="Ex: 50,00"
                         {...field}
                         disabled={isLoading}
                       />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowPassword(!showPassword)}
-                        disabled={isLoading}
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
-                        )}
-                      </Button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {(isEditMode ? form.watch("password") : true) && (
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {isEditMode ? "Confirmar Nova Senha" : "Confirmar Senha"}
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          placeholder="••••••••"
-                          type={showConfirmPassword ? "text" : "password"}
-                          {...field}
-                          disabled={isLoading}
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                          onClick={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
-                          disabled={isLoading}
-                        >
-                          {showConfirmPassword ? (
-                            <EyeOff className="h-4 w-4 text-muted-foreground" />
-                          ) : (
-                            <Eye className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </Button>
-                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            )}
+
+              <FormField
+                control={form.control}
+                name="duration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Duração (minutos)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Ex: 30"
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL da Imagem (Opcional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://exemplo.com/imagem.png"
+                      {...field}
+                      value={field.value ?? ""} // Handle null value
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="active"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                  <div className="space-y-0.5">
+                    <FormLabel>Ativo</FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      O serviço estará visível para os clientes.
+                    </p>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
             <div className="flex items-center md:justify-end justify-center space-x-4 pt-6">
               <Button
@@ -304,7 +277,7 @@ export function ServicesForm({
                 ) : isEditMode ? (
                   "Salvar Alterações"
                 ) : (
-                  "Cadastrar"
+                  "Cadastrar Serviço"
                 )}
               </Button>
             </div>
