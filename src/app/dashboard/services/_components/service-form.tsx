@@ -32,8 +32,19 @@ const formSchema = z.object({
     .string()
     .min(1, { message: "A descrição é obrigatória" })
     .nullable(),
-  price: z.number().positive("Preço deve ser maior que zero"),
-  duration: z.number().positive("A duração deve ser maior que zero"),
+  price: z
+    .union([
+      z.string().regex(/^\d+(\.\d{1,2})?$/, "Preço inválido"),
+      z.number(),
+    ])
+    .refine((val) => parseFloat(val as string) > 0, {
+      message: "Preço deve ser maior que zero",
+    }),
+  duration: z
+    .union([z.string().regex(/^\d+$/, "Duração inválida"), z.number()])
+    .refine((val) => parseInt(val as string) > 0, {
+      message: "A duração deve ser maior que zero",
+    }),
   imageUrl: z.string().url("URL da imagem inválida").optional().nullable(),
   active: z.boolean(),
 });
@@ -240,7 +251,7 @@ export function ServicesForm({
               control={form.control}
               name="active"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray03 p-3 shadow-sm">
                   <div className="space-y-0.5">
                     <FormLabel>Ativo</FormLabel>
                     <p className="text-sm text-muted-foreground">

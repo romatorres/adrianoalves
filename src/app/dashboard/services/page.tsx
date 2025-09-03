@@ -3,8 +3,8 @@
 import { useState, useEffect, useTransition } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Edit, FileText, Plus, Trash2, User } from "lucide-react";
-
+import { Clock, DollarSign, Edit, Plus, Trash2, User } from "lucide-react";
+import Image from "next/image";
 import { Service } from "@/lib/types";
 import { getServices, deleteService } from "./action";
 
@@ -102,102 +102,69 @@ export default function Services() {
           </Link>
         </div>
 
-        {/* Desktop Table */}
-        <div className="hidden md:block rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray01">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray04 uppercase tracking-wider">
-                  Nome
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray04 uppercase tracking-wider">
-                  Descrição
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray04 uppercase tracking-wider">
-                  Ações
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-amber-100 divide-y divide-gray-300">
-              {services.map((service: Service) => (
-                <tr
-                  key={service.id}
-                  className="hover:bg-amber-50 transition-colors"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="h-8 w-8 rounded-full bg-gray04 flex items-center justify-center mr-3">
-                        <User className="h-4 w-4 text-gray01" />
-                      </div>
-                      <div className="text-sm font-medium text-gray01">
-                        {service.name}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray01">
-                      {service.description}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex justify-end space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEditClick(service)}
-                        className="text-background hover:bg-background/10"
-                      >
-                        <Edit className="h-3 w-3 mr-1" />
-                        Editar
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteClick(service)}
-                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                      >
-                        <Trash2 className="h-3 w-3 mr-1" />
-                        Excluir
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Mobile Cards */}
-        <div className="md:hidden space-y-3">
+        {/* Cards */}
+        <div className="grid justify-center items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {services.map((service: Service) => (
             <div
               key={service.id}
-              className="bg-amber-100 rounded-lg shadow-sm border border-gray-200 p-4"
+              className="bg-amber-100 rounded-lg shadow-sm border border-gray-200 p-3 max-w-80"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
+                  <div className="relative aspect-[4/3] w-full mb-4">
+                    <Image
+                      src={service.imageUrl || "/img/default-service.jpg"}
+                      alt={service.name}
+                      fill
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
                   <div className="flex items-center mb-2">
                     <div className="h-8 w-8 rounded-full bg-gray04 flex items-center justify-center mr-3">
                       <User className="h-4 w-4 text-gray01" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900 truncate">
+                      <p className="font-semibold text-background">
                         {service.name}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center text-sm text-gray02 mb-3">
-                    <FileText className="h-4 w-4 mr-2 flex-shrink-0" />
-                    <span className="truncate">{service.description}</span>
+                  <div className="flex gap-6">
+                    <div className="flex items-center text-gray01 font-semibold mb-3">
+                      <DollarSign className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span className="truncate">
+                        {typeof service.price === "number"
+                          ? service.price.toFixed(2)
+                          : Number(service.price).toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex items-center text-gray01 font-semibold mb-3">
+                      <Clock className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span className="truncate">{service.duration}min</span>
+                    </div>
+                  </div>
+                  <div className="flex items-start text-sm text-gray02 mb-3">
+                    <span className="">{service.description}</span>
+                  </div>
+                  <div className="mt-2">
+                    <span
+                      className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${
+                        service.active
+                          ? "bg-green-200 text-green-900"
+                          : "bg-red-200 text-red-800"
+                      }`}
+                    >
+                      {service.active ? "Ativo" : "Inativo"}
+                    </span>
                   </div>
                 </div>
               </div>
-              <div className="flex space-x-2 pt-2 border-t border-gray-100">
+              <div className="flex space-x-2 pt-4 justify-end">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleEditClick(service)}
-                  className="flex-1 text-background hover:bg-background/10"
+                  className="text-background hover:bg-background/10"
                 >
                   <Edit className="h-4 w-4 mr-1" />
                   Editar
@@ -206,7 +173,7 @@ export default function Services() {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleDeleteClick(service)}
-                  className="flex-1 text-destructive hover:text-destructive hover:bg-destructive/10"
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
                 >
                   <Trash2 className="h-4 w-4 mr-1" />
                   Excluir
@@ -236,8 +203,7 @@ export default function Services() {
           <DialogHeader>
             <DialogTitle>Editar Serviço</DialogTitle>
             <DialogDescription>
-              Faça alterações no serviço. Clique em salvar para
-              aplicar.
+              Faça alterações no serviço. Clique em salvar para aplicar.
             </DialogDescription>
           </DialogHeader>
           <ServicesForm
