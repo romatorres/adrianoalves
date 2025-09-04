@@ -88,9 +88,10 @@ export default function SectionsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl text-background font-bold">Gerenciar Seções</h1>
-        <Button variant={"outline"}>
-          <Link href="/dashboard">
+        <Button variant={"ghost"}>
+          <Link href="/dashboard" className="flex items-center gap-2">
             <ChevronLeft />
+            <span>Voltar</span>
           </Link>
         </Button>
       </div>
@@ -118,7 +119,9 @@ export default function SectionsPage() {
                 </span>
                 <Switch
                   checked={section.active}
-                  onCheckedChange={(active) => handleToggle(section.name, active)}
+                  onCheckedChange={(active) =>
+                    handleToggle(section.name, active)
+                  }
                 />
               </div>
             </div>

@@ -37,13 +37,12 @@ export function ServiceCard({ service }: { service: Service }) {
       <div className="border-t border-gray-200 bg-gray-50 p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-gray-500">Preço</p>
-            <p className="text-2xl font-bold font-quaternary text-gray-800">
+            <p className="text-4xl font-bold font-quaternary text-background">
               {formattedPrice}
             </p>
           </div>
           <Link href="https://avec.app/adrianoalves/" target="_blank">
-            <button className="rounded-full bg-primary py-2 px-4 text-sm font-tertiary text-background transition-colors duration-300 hover:bg-black_secondary hover:text-white">
+            <button className="rounded-full bg-primary hover:bg-primary-hover py-2.5 px-4 text-sm font-tertiary text-background font-medium transition-colors duration-300 hover:text-white cursor-pointer">
               Agendar
             </button>
           </Link>
