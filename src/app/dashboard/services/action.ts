@@ -5,12 +5,9 @@ import { Service } from "@/lib/types";
 
 export async function getServices(): Promise<Service[]> {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/auth/services`,
-      {
-        cache: "no-store",
-      }
-    );
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/services`, {
+      cache: "no-store",
+    });
     if (!res.ok) {
       throw new Error("Erro ao buscar serviços");
     }
@@ -24,16 +21,13 @@ export async function getServices(): Promise<Service[]> {
 
 export async function createService(data: Omit<Service, "id">) {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/auth/services`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/services`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));
@@ -57,7 +51,7 @@ export async function updateService(
 ) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/auth/services/${serviceId}`,
+      `${process.env.NEXT_PUBLIC_URL}/api/services/${serviceId}`,
       {
         method: "PUT",
         headers: {
@@ -86,7 +80,7 @@ export async function updateService(
 export async function deleteService(serviceId: string) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/auth/services/${serviceId}`,
+      `${process.env.NEXT_PUBLIC_URL}/api/services/${serviceId}`,
       {
         method: "DELETE",
       }

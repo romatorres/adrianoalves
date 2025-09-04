@@ -103,7 +103,7 @@ export default function Services() {
         </div>
 
         {/* Cards */}
-        <div className="grid justify-center items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 justify-items-center sm:justify-items-start place-items-center sm:place-items-start">
           {services.map((service: Service) => (
             <div
               key={service.id}

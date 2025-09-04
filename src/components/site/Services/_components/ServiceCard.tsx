@@ -5,50 +5,50 @@ import Link from "next/link";
 import { Service } from "@/lib/types";
 
 export function ServiceCard({ service }: { service: Service }) {
-  const formattedPrice = (price: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(price);
-  };
+  const formattedPrice = new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(Number(service.price || 0));
 
   return (
-    <section className="mx-2 rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gray04">
-      <div className="p-2">
-        <div className="relative h-56 w-full">
-          <Image
-            src={service.imageUrl || ""}
-            alt={service.name}
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="p-4">
-          <h3 className="text-xl font-secondary font-semibold mb-2">
-            {service.name}
-          </h3>
-          {service.description && (
-            <p className="text-gray-700 font-tertiary mb-4">
-              {service.description}
-            </p>
-          )}
-          {service.duration && (
-            <p className="text-gray-700 font-tertiary mb-4">
-              {service.duration} minutos
-            </p>
-          )}
-          <div className="flex justify-between items-center">
-            <span className="text-2xl font-quaternary font-bold text-background">
-              {formattedPrice(service.price)}
-            </span>
-            <Link href="https://avec.app/adrianoalves/" target="_blank">
-              <button className="bg-primary hover:bg-black_secondary text-background hover:text-white text-sm py-2 px-4 rounded-full transition-colors duration-300 font-tertiary">
-                Agendar
-              </button>
-            </Link>
-          </div>
+    <div className="mx-auto flex h-full max-w-sm flex-col overflow-hidden rounded-lg bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl">
+      <div className="relative h-56 w-full">
+        <Image
+          src={service.imageUrl || "/img/default-service.jpg"}
+          alt={service.name}
+          fill
+          className="object-cover"
+        />
+      </div>
+      <div className="flex flex-1 flex-col p-4">
+        <h3 className="text-xl font-secondary font-semibold text-gray-800">
+          {service.name}
+        </h3>
+        <p className="mt-2 flex-1 text-sm text-gray-600 font-tertiary">
+          {service.description}
+        </p>
+        <div className="mt-4">
+          <p className="text-xs text-gray-500">Duração</p>
+          <p className="font-semibold text-gray-700">
+            {service.duration} minutos
+          </p>
         </div>
       </div>
-    </section>
+      <div className="border-t border-gray-200 bg-gray-50 p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs text-gray-500">Preço</p>
+            <p className="text-2xl font-bold font-quaternary text-gray-800">
+              {formattedPrice}
+            </p>
+          </div>
+          <Link href="https://avec.app/adrianoalves/" target="_blank">
+            <button className="rounded-full bg-primary py-2 px-4 text-sm font-tertiary text-background transition-colors duration-300 hover:bg-black_secondary hover:text-white">
+              Agendar
+            </button>
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }
