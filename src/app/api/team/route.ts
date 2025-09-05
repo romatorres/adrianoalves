@@ -38,6 +38,7 @@ export async function GET() {
   try {
     const teamMembers = await prisma.teamMember.findMany({
       select: {
+        id: true,
         name: true,
         bio: true,
         imageUrl: true,
@@ -48,9 +49,6 @@ export async function GET() {
       },
     });
 
-    teamMembers.map((teamMember) => ({
-      ...teamMember,
-    }));
     return NextResponse.json(teamMembers);
   } catch (error) {
     console.error("Error fetching team:", error);

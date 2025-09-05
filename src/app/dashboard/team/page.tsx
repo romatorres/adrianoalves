@@ -79,7 +79,7 @@ export default function TeamMember() {
   if (isLoading && members.length === 0) {
     return (
       <div className="flex justify-center items-center h-64">
-        <p>Carregando serviços...</p>
+        <p>Carregando membros...</p>
       </div>
     );
   }
@@ -96,8 +96,10 @@ export default function TeamMember() {
           </div>
           <Link href={"/dashboard/team/new/"} className="md:w-fit w-full">
             <Button className="w-full">
-              <Plus />
-              Membro
+              <span className="flex items-center justify-center gap-1">
+                <Plus />
+                Membro
+              </span>
             </Button>
           </Link>
         </div>
@@ -160,8 +162,10 @@ export default function TeamMember() {
                   onClick={() => handleEditClick(member)}
                   className="text-background hover:bg-background/10"
                 >
-                  <Edit className="h-4 w-4 mr-1" />
-                  Editar
+                  <span className="flex gap-1 items-center">
+                    <Edit className="h-4 w-4" />
+                    Editar
+                  </span>
                 </Button>
                 <Button
                   variant="ghost"
@@ -169,8 +173,10 @@ export default function TeamMember() {
                   onClick={() => handleDeleteClick(member)}
                   className="text-destructive hover:text-destructive hover:bg-destructive/10"
                 >
-                  <Trash2 className="h-4 w-4 mr-1" />
-                  Excluir
+                  <span className="flex gap-1 items-center">
+                    <Trash2 className="h-4 w-4" />
+                    Excluir
+                  </span>
                 </Button>
               </div>
             </div>
