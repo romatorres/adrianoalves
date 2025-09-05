@@ -5,6 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getSections, updateSectionStatus } from "./action";
 
 interface Section {
   id: string;
@@ -25,54 +26,45 @@ export default function SectionsPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchSections();
+    const loadSections = async () => {
+      try {
+        const result = await getSections();
+
+        if (result && "error" in result) {
+          console.error("Error from action:", result.error);
+          setSections([]);
+        } else if (Array.isArray(result)) {
+          setSections(result);
+        } else {
+          console.error("Unexpected data format:", result);
+          setSections([]);
+        }
+      } catch (error) {
+        console.error("Error fetching sections:", error);
+        setSections([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSections();
   }, []);
 
-  const fetchSections = async () => {
-    try {
-      // Primeiro, tenta criar as seções iniciais
-      await fetch("/api/sections", {
-        method: "POST",
-      });
+  const handleToggle = async (id: string, active: boolean) => {
+    const originalSections = sections;
 
-      // Depois busca todas as seções
-      const response = await fetch("/api/sections");
-      const data = await response.json();
+    // Optimistic update
+    setSections((prev) =>
+      prev.map((section) =>
+        section.id === id ? { ...section, active } : section
+      )
+    );
 
-      if (Array.isArray(data)) {
-        setSections(data);
-      } else if (data.error) {
-        console.error("Error from API:", data.error);
-        setSections([]);
-      } else {
-        console.error("Unexpected data format:", data);
-        setSections([]);
-      }
-    } catch (error) {
-      console.error("Error fetching sections:", error);
-      setSections([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    const result = await updateSectionStatus(id, active);
 
-  const handleToggle = async (name: string, active: boolean) => {
-    try {
-      const response = await fetch("/api/sections", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, active }),
-      });
-
-      if (response.ok) {
-        setSections((prev) =>
-          prev.map((section) =>
-            section.name === name ? { ...section, active } : section
-          )
-        );
-      }
-    } catch (error) {
-      console.error("Error updating section:", error);
+    if (result?.error) {
+      console.error("Error updating section:", result.error);
+      setSections(originalSections);
     }
   };
 
@@ -115,13 +107,11 @@ export default function SectionsPage() {
                       : "bg-red-100 text-red-800"
                   }`}
                 >
-                  {section.active ? "Habilidado" : "Desabilitado"}
+                  {section.active ? "Habilitado" : "Desabilitado"}
                 </span>
                 <Switch
                   checked={section.active}
-                  onCheckedChange={(active) =>
-                    handleToggle(section.name, active)
-                  }
+                  onCheckedChange={(active) => handleToggle(section.id, active)}
                 />
               </div>
             </div>

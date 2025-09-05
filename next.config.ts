@@ -7,11 +7,19 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "**",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+      },
+      {
+        protocol: "https",
+        hostname: "2jc6rnrlfu.ufs.sh",
+      },
     ],
-    domains: ["localhost", "utfs.io", "2jc6rnrlfu.ufs.sh"],
-  },
-  typescript: {
-    ignoreBuildErrors: true,
   },
 };
 

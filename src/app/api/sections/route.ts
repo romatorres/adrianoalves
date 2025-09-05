@@ -16,33 +16,9 @@ export async function GET() {
 
     return NextResponse.json(sections);
   } catch (error) {
-    console.error("Error in API:", error);
+    console.error("Error fetching sections:", error);
     return NextResponse.json(
-      { error: "Error fetching sections" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function PUT(request: Request) {
-  try {
-    const { name, active } = await request.json();
-
-    const section = await prisma.sectionVisibility.update({
-      where: { name },
-      data: { active },
-      select: {
-        id: true,
-        name: true,
-        active: true
-      }
-    });
-
-    return NextResponse.json(section);
-  } catch (error) {
-    console.error("Error updating section:", error);
-    return NextResponse.json(
-      { error: "Error updating section" },
+      { message: "Erro ao buscar as seções." },
       { status: 500 }
     );
   }
@@ -81,7 +57,7 @@ export async function POST() {
   } catch (error) {
     console.error("Error creating sections:", error);
     return NextResponse.json(
-      { error: "Error creating sections" },
+      { message: "Erro ao criar as seções." },
       { status: 500 }
     );
   }
