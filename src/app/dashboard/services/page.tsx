@@ -78,8 +78,9 @@ export default function Services() {
 
   if (isLoading && services.length === 0) {
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex flex-col gap-6 justify-center items-center h-64">
         <p>Carregando serviços...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
       </div>
     );
   }

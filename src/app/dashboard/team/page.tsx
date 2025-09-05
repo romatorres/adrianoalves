@@ -78,8 +78,9 @@ export default function TeamMember() {
 
   if (isLoading && members.length === 0) {
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex flex-col gap-6 justify-center items-center h-64">
         <p>Carregando membros...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
       </div>
     );
   }
@@ -89,7 +90,7 @@ export default function TeamMember() {
       <div className="w-full space-y-8">
         <div className="flex md:flex-row flex-col md:items-center items-start md:justify-between justify-center md:gap-0 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Time</h1>
+            <h1 className="text-3xl font-bold text-background">Time</h1>
             <p className="text-gray-600 mt-1">
               Gerencie todos os membros do time
             </p>
@@ -131,17 +132,15 @@ export default function TeamMember() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex gap-6">
-                    <div className="flex items-center text-gray01 font-semibold mb-3">
-                      <span className="truncate">{member.instagram}</span>
-                    </div>
-                    <div className="flex items-center text-gray01 font-semibold mb-3">
-                      <span className="truncate">{member.facebook}</span>
-                    </div>
-                  </div>
                   <div className="flex items-start text-sm text-gray02 mb-3">
                     <span className="">{member.bio}</span>
                   </div>
+                  <div className="flex flex-col text-sm text-gray01">
+                    <span className="truncate">{member.instagram}</span>
+                    <span className="truncate">{member.facebook}</span>
+                    <span className="truncate">{member.linkedin}</span>
+                  </div>
+
                   <div className="mt-2">
                     <span
                       className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${

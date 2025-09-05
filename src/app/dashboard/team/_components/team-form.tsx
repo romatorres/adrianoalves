@@ -177,64 +177,62 @@ export function TeamMemberForm({
               )}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="instagram"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Instagram</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="//instagrm.com"
-                        {...field}
-                        value={field.value || ""}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="instagram"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Instagram</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://instagram.com/seu-usuario"
+                      {...field}
+                      value={field.value || ""}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="facebook"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Facebook</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="//facebook.com"
-                        {...field}
-                        value={field.value || ""}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="facebook"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Facebook</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://facebook.com/seu-usuario"
+                      {...field}
+                      value={field.value || ""}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="linkedin"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Linkedin</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="//linkedin.com"
-                        {...field}
-                        value={field.value || ""}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="linkedin"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Linkedin</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://linkedin.com/in/seu-perfil"
+                      {...field}
+                      value={field.value || ""}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
@@ -261,10 +259,7 @@ export function TeamMemberForm({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray03 p-3 shadow-sm">
                   <div className="space-y-0.5">
-                    <FormLabel>Ativo</FormLabel>
-                    <p className="text-sm text-muted-foreground">
-                      O membro estará visível para os clientes.
-                    </p>
+                    <FormLabel>Status</FormLabel>
                   </div>
                   <FormControl>
                     <Switch
