@@ -28,7 +28,6 @@ export interface Service {
 export interface Team {
   id: string;
   name: string;
-  role: string;
   imageUrl: string;
   bio?: string | null;
   instagram?: string | null;

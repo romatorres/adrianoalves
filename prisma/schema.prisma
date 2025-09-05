@@ -118,7 +118,6 @@ model Product {
 model TeamMember {
   id        String   @id @default(cuid())
   name      String
-  role      String
   bio       String?
   imageUrl  String
   instagram String?
