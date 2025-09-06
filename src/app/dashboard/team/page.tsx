@@ -90,7 +90,7 @@ export default function TeamMember() {
       <div className="w-full space-y-8">
         <div className="flex md:flex-row flex-col md:items-center items-start md:justify-between justify-center md:gap-0 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-background">Time</h1>
+            <h1 className="text-3xl font-bold text-background">Equipe</h1>
             <p className="text-gray-600 mt-1">
               Gerencie todos os membros do time
             </p>

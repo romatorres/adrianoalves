@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poller_One, Ubuntu, Nunito, Bebas_Neue } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { SectionDataProvider } from "@/components/SectionDataProvider";
 import "./globals.css";
 
 const pollerOne = Poller_One({
@@ -41,8 +42,10 @@ export default function RootLayout({
       <body
         className={`${pollerOne.variable} ${ubuntu.variable} ${nunito.variable} ${bebasNeue.variable} antialiased`}
       >
-        {children}
-        <Toaster position="top-right" />
+        <SectionDataProvider>
+          {children}
+          <Toaster position="top-right" />
+        </SectionDataProvider>
       </body>
     </html>
   );

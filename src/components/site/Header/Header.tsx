@@ -3,16 +3,14 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Menu } from "lucide-react";
-/* import { AdminButton } from "../Admin/AdminButton"; */
 import { MobileMenu } from "./MobileMenu";
-/* import { useScrollToSection } from "@/hooks/useScrollToSection"; */
+import { useSectionData } from "@/components/SectionDataProvider";
 
 export function Header() {
+  const sectionsMap = useSectionData();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
-  /*  const scrollToSection = useScrollToSection(); */
 
-  // Controla o background no scroll
   useEffect(() => {
     const handleScroll = () => {
       setHasScrolled(window.scrollY > 0);
@@ -22,8 +20,7 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lista de links do menu
-  const menuItems = [
+  const allMenuItems = [
     { href: "promotions", label: "PROMOÇÕES" },
     { href: "about", label: "SOBRE" },
     { href: "shop", label: "SHOPS" },
@@ -33,18 +30,30 @@ export function Header() {
     { href: "contact", label: "CONTATO" },
   ];
 
+  // Filtra os itens de menu com base no sectionsMap
+  // Itens como 'about' e 'contact' que não estão no DB são sempre exibidos
+  const visibleMenuItems = allMenuItems.filter(
+    (item) => sectionsMap[item.href] !== false
+  );
+
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string
   ) => {
     e.preventDefault();
-    /* scrollToSection(href); */
+    const section = document.getElementById(href);
+    if (section) {
+      window.scrollTo({
+        top: section.offsetTop - 100, // Ajuste para o header fixo
+        behavior: "smooth",
+      });
+    }
     setIsMenuOpen(false);
   };
 
   const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    /* scrollToSection("home"); */
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -71,7 +80,7 @@ export function Header() {
 
           {/* Menu Desktop */}
           <nav className="hidden lg:flex items-center space-x-6">
-            {menuItems.map((item) => (
+            {visibleMenuItems.map((item) => (
               <a
                 key={item.href}
                 href={`#${item.href}`}
@@ -81,7 +90,6 @@ export function Header() {
                 {item.label}
               </a>
             ))}
-            {/* <AdminButton /> */}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -99,7 +107,7 @@ export function Header() {
       <MobileMenu
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
-        menuItems={menuItems}
+        menuItems={visibleMenuItems}
         onNavClick={handleNavClick}
       />
     </>
