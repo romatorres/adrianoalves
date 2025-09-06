@@ -11,13 +11,31 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Service } from "@/lib/types";
+import { useEffect, useState } from "react";
 
 interface ServiceGridProps {
-  services: Service[];
   isVisible?: boolean;
 }
 
-export function Services({ services = [], isVisible = true }: ServiceGridProps) {
+export function Services({ isVisible = true }: ServiceGridProps) {
+  const [services, setServices] = useState<Service[]>([]);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await fetch("/api/services");
+        const data = await res.json();
+        setServices(data);
+      } catch (error) {
+        console.error("Failed to fetch services:", error);
+      }
+    };
+
+    if (isVisible) {
+      fetchServices();
+    }
+  }, [isVisible]);
+
   if (!isVisible) return null;
 
   if (!services || services.length === 0) {

@@ -3,13 +3,31 @@
 import { Team as TeamMemberType } from "@/lib/types";
 import Image from "next/image";
 import TeamMember from "./_components/TeamCard";
+import { useEffect, useState } from "react";
 
 interface TeamGridProps {
-  members: TeamMemberType[];
   isVisible?: boolean;
 }
 
-export default function Team({ members, isVisible = true }: TeamGridProps) {
+export default function Team({ isVisible = true }: TeamGridProps) {
+  const [members, setMembers] = useState<TeamMemberType[]>([]);
+
+  useEffect(() => {
+    const fetchTeam = async () => {
+      try {
+        const res = await fetch("/api/team");
+        const data = await res.json();
+        setMembers(data);
+      } catch (error) {
+        console.error("Failed to fetch team members:", error);
+      }
+    };
+
+    if (isVisible) {
+      fetchTeam();
+    }
+  }, [isVisible]);
+
   if (!isVisible) return null;
 
   return (
