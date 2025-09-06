@@ -37,7 +37,7 @@ export default function Home() {
       <section id="team">
         <Team isVisible={sectionsMap.team} />
       </section>
-      <section id="service">
+      <section id="services">
         <Services isVisible={sectionsMap.services} />
       </section>
       {/* <section id="gallery">

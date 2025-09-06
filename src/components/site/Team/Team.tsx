@@ -34,7 +34,7 @@ export default function Team({ isVisible = true }: TeamGridProps) {
     <section className="py-12 md:py-16 lg:py-20 bg-gray-50">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6">
         <div className="mb-16 md:mb-20 flex flex-col items-center">
-          <h2 className="text-3xl md:text-6xl font-primary font-normal text-black-secondary mb-3">
+          <h2 className="text-3xl md:text-6xl font-primary font-normal text-background mb-3">
             Nosso Time
           </h2>
           <div className="relative w-[96px] h-[22px] md:w-[120px] md:h-[28px]">
@@ -68,7 +68,7 @@ export default function Team({ isVisible = true }: TeamGridProps) {
           </a>
           <a
             href="#service"
-            className="border-2 border-black_secondary text-black-secondary px-12 py-4 rounded-full font-semibold text-center hover:bg-background hover:text-white transition-colors duration-300"
+            className="border-2 border-background text-background px-12 py-4 rounded-full font-semibold text-center hover:bg-background hover:text-white transition-colors duration-300"
           >
             NOSSOS SERVIÇOS
           </a>
