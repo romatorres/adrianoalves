@@ -8,7 +8,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui-shadcn/carousel";
+} from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Product } from "@/lib/types";
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { X } from "lucide-react";
-/* import { AdminButton } from "../Admin/AdminButton"; */
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -53,7 +52,6 @@ export function MobileMenu({
               {item.label}
             </a>
           ))}
-          {/* <AdminButton /> */}
         </nav>
       </div>
     </>

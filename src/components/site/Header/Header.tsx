@@ -23,9 +23,9 @@ export function Header() {
   const allMenuItems = [
     { href: "promotions", label: "PROMOÇÕES" },
     { href: "about", label: "SOBRE" },
-    { href: "shop", label: "SHOPS" },
+    { href: "products", label: "SHOPS" },
     { href: "team", label: "TIME" },
-    { href: "service", label: "SERVIÇOS" },
+    { href: "services", label: "SERVIÇOS" },
     { href: "gallery", label: "GALERIA" },
     { href: "contact", label: "CONTATO" },
   ];
