@@ -110,9 +110,9 @@ export default function TeamMember() {
           {members.map((member: Team) => (
             <div
               key={member.id}
-              className="bg-amber-100 rounded-lg shadow-sm border border-gray-200 p-3 max-w-80"
+              className="bg-amber-100 rounded-lg shadow-sm border border-gray-200 p-3 max-w-80 w-full flex flex-col"
             >
-              <div className="flex items-start justify-between">
+              <div className="flex items-start justify-between flex-grow">
                 <div className="flex-1 min-w-0">
                   <div className="relative aspect-[4/3] w-full mb-4">
                     <Image
