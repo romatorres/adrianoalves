@@ -1,0 +1,239 @@
+"use client";
+
+import { useState, useEffect, useTransition } from "react";
+import Link from "next/link";
+import { toast } from "sonner";
+import { Edit, Plus, Trash2, User } from "lucide-react";
+import Image from "next/image";
+import { GalleryImage } from "@/lib/types";
+import { getGalleryImage, deleteGalleryImage } from "./action";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { GalleryImageForm } from "./_components/gallery-form";
+
+export default function GalleryImagePage() {
+  const [gallery, setGalleryImage] = useState<GalleryImage[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPending, startTransition] = useTransition();
+
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedGellery, setSelectedGellery] = useState<GalleryImage | null>(
+    null
+  );
+
+  useEffect(() => {
+    async function loadGallery() {
+      setIsLoading(true);
+      const fetchedGalleryImage = await getGalleryImage();
+      setGalleryImage(fetchedGalleryImage);
+      setIsLoading(false);
+    }
+    loadGallery();
+  }, []);
+
+  const handleEditClick = (gallery: GalleryImage) => {
+    setSelectedGellery(gallery);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDeleteClick = (gallery: GalleryImage) => {
+    setSelectedGellery(gallery);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!selectedGellery) return;
+
+    startTransition(async () => {
+      const result = await deleteGalleryImage(selectedGellery.id);
+      if (result.success) {
+        toast.success("Galeria excluída com sucesso!");
+        // Refetch Team
+        const fetchedGalleryImage = await getGalleryImage();
+        setGalleryImage(fetchedGalleryImage);
+      } else {
+        toast.error(result.message || "Erro ao excluir a gleria.");
+      }
+      setIsDeleteDialogOpen(false);
+    });
+  };
+
+  const handleUpdateSuccess = async () => {
+    setIsEditDialogOpen(false);
+    setSelectedGellery(null);
+    // Refetch team to show updated data
+    setIsLoading(true);
+    const fetchedGalleryImage = await getGalleryImage();
+    setGalleryImage(fetchedGalleryImage);
+    setIsLoading(false);
+  };
+
+  if (isLoading && gallery.length === 0) {
+    return (
+      <div className="flex flex-col gap-6 justify-center items-center h-64">
+        <p>Carregando fotos...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="w-full space-y-8">
+        <div className="flex md:flex-row flex-col md:items-center items-start md:justify-between justify-center md:gap-0 gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-background">Galeria</h1>
+            <p className="text-gray-600 mt-1">Gerencie sua Galeria de Fotos</p>
+          </div>
+          <Link href={"/dashboard/gallery/new/"} className="md:w-fit w-full">
+            <Button className="w-full">
+              <span className="flex items-center justify-center gap-1">
+                <Plus />
+                Foto
+              </span>
+            </Button>
+          </Link>
+        </div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 justify-items-center sm:justify-items-start place-items-center sm:place-items-start">
+          {gallery.map((member: GalleryImage) => (
+            <div
+              key={member.id}
+              className="bg-amber-100 rounded-lg shadow-sm border border-gray-200 p-3 max-w-80 w-full flex flex-col"
+            >
+              <div className="flex items-start justify-between flex-grow">
+                <div className="flex-1 min-w-0">
+                  <div className="relative aspect-[4/3] w-full mb-4">
+                    <Image
+                      src={member.imageUrl || "/img/default-service.jpg"}
+                      alt={member.title}
+                      fill
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                  <div className="flex items-center mb-2">
+                    <div className="h-8 w-8 rounded-full bg-gray04 flex items-center justify-center mr-3">
+                      <User className="h-4 w-4 text-gray01" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-background">
+                        {member.title}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start text-sm text-gray02 mb-3">
+                    <span className="">{member.description}</span>
+                  </div>
+                  <div className="mt-2">
+                    <span
+                      className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${
+                        member.active
+                          ? "bg-green-200 text-green-900"
+                          : "bg-red-200 text-red-800"
+                      }`}
+                    >
+                      {member.active ? "Ativo" : "Inativo"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex space-x-2 pt-4 justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleEditClick(member)}
+                  className="text-background hover:bg-background/10"
+                >
+                  <span className="flex gap-1 items-center">
+                    <Edit className="h-4 w-4" />
+                    Editar
+                  </span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDeleteClick(member)}
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                >
+                  <span className="flex gap-1 items-center">
+                    <Trash2 className="h-4 w-4" />
+                    Excluir
+                  </span>
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {!isLoading && gallery.length === 0 && (
+          <div className="text-center py-12">
+            <User className="mx-auto h-12 w-12 text-gray-400" />
+            <h3 className="mt-2 text-sm font-medium text-gray-900">
+              Nenhuma foto cadastrada
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              Comece adicionando uma nova foto.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Edit Service Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Editar Serviço</DialogTitle>
+            <DialogDescription>
+              Faça alterações no serviço. Clique em salvar para aplicar.
+            </DialogDescription>
+          </DialogHeader>
+          <GalleryImageForm
+            gallery={selectedGellery}
+            onSuccess={handleUpdateSuccess}
+            onCancel={() => setIsEditDialogOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmar Exclusão</DialogTitle>
+            <DialogDescription>
+              Tem certeza que deseja excluir a foto?{" "}
+              <strong>{selectedGellery?.title}</strong>? Esta ação não pode ser
+              desfeita.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="secondary"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleConfirmDelete}
+              disabled={isPending}
+            >
+              {isPending ? "Excluindo..." : "Excluir"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

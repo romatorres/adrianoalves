@@ -55,9 +55,11 @@ export interface Promotion {
 
 export interface GalleryImage {
   id: string;
-  title: string | null;
+  title: string;
   imageUrl: string;
   description: string | null;
+  featured: boolean;
+  active: boolean;
 }
 
 export interface GalleryGridProps {

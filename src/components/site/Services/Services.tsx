@@ -89,8 +89,9 @@ export function Services({ isVisible = true }: ServiceGridProps) {
             }}
             plugins={[
               Autoplay({
-                delay: 3000,
-                stopOnInteraction: true,
+                delay: 2000,
+                stopOnInteraction: false,
+                stopOnMouseEnter: true,
               }),
             ]}
           >

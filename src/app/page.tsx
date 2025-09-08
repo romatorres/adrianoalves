@@ -40,9 +40,9 @@ export default function Home() {
       <section id="services">
         <Services isVisible={sectionsMap.services} />
       </section>
-      {/* <section id="gallery">
-        <Gallery images={images} isVisible={sectionsMap.gallery} />
-      </section>  */}
+      <section id="gallery">
+        <Gallery isVisible={sectionsMap.gallery} />
+      </section>
       <section id="contact">
         <Contact />
       </section>

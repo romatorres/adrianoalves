@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { GalleryGridProps } from "@/lib/types";
+import { GalleryGridProps, GalleryImage } from "@/lib/types";
 import { ImageModal } from "../ImageModal/ImageModal";
 import { GalleryCard } from "./_components/GalleryCard";
 import {
@@ -11,21 +11,31 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui-shadcn/carousel";
+} from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
-export default function Gallery({
-  images = [],
-  isVisible = true,
-}: GalleryGridProps) {
+export default function Gallery({ isVisible = true }: GalleryGridProps) {
+  const [image, setImage] = useState<GalleryImage[]>([]);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
     null
   );
 
-  if (!isVisible || !images.length) {
-    return null;
-  }
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const res = await fetch("/api/gallery");
+        const data = await res.json();
+        setImage(data);
+      } catch (error) {
+        console.error("Failed to fetch images:", error);
+      }
+    };
+
+    if (isVisible) {
+      fetchImage();
+    }
+  }, [isVisible]);
 
   const handleImageLoad = (imageId: string) => {
     setLoadedImages((prev) => new Set(prev).add(imageId));
@@ -40,7 +50,7 @@ export default function Gallery({
   };
 
   const handleNextImage = () => {
-    if (selectedImageIndex !== null && selectedImageIndex < images.length - 1) {
+    if (selectedImageIndex !== null && selectedImageIndex < image.length - 1) {
       setSelectedImageIndex(selectedImageIndex + 1);
     }
   };
@@ -50,6 +60,8 @@ export default function Gallery({
       setSelectedImageIndex(selectedImageIndex - 1);
     }
   };
+
+  if (!isVisible) return null;
 
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-white">
@@ -74,11 +86,13 @@ export default function Gallery({
             plugins={[
               Autoplay({
                 delay: 2000,
+                stopOnInteraction: false,
+                stopOnMouseEnter: true,
               }),
             ]}
           >
             <CarouselContent className="-ml-2 md:-ml-4">
-              {images.map((image, index) => (
+              {image.map((image, index) => (
                 <CarouselItem
                   key={image.id}
                   className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
@@ -99,7 +113,7 @@ export default function Gallery({
 
         {selectedImageIndex !== null && (
           <ImageModal
-            images={images}
+            images={image}
             currentImageIndex={selectedImageIndex}
             onClose={handleCloseModal}
             onNext={handleNextImage}
