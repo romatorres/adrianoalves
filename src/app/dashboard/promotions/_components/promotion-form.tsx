@@ -18,38 +18,40 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { createGalleryImage, updateGalleryImage } from "../action";
-import { GalleryImage } from "@/lib/types";
+import { createPromotion, updatePromotion } from "../action";
+import { Promotion } from "@/lib/types";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 
-// Unified schema for creating and editing a service
+// Unified schema for creating and editing a promotion
 const formSchema = z.object({
   title: z
     .string()
-    .min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
+    .min(3, { message: "O título deve ter pelo menos 3 caracteres" }),
   description: z.string().optional().nullable(),
-  featured: z.boolean(),
-  imageUrl: z.string().url("URL da imagem inválida"),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
+  discount: z.coerce.number().optional().nullable(),
+  imageUrl: z.string().url("URL da imagem inválida").optional().nullable(),
   active: z.boolean(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface GalleryImageProps {
-  gallery?: GalleryImage | null;
+interface PromotionsProps {
+  promotion?: Promotion | null;
   onSuccess?: () => void;
   onCancel?: () => void;
 }
 
-export function GalleryImageForm({
-  gallery,
+export function PromotionForm({
+  promotion,
   onSuccess,
   onCancel,
-}: GalleryImageProps) {
+}: PromotionsProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const isEditMode = !!gallery;
+  const isEditMode = !!promotion;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -57,22 +59,31 @@ export function GalleryImageForm({
       title: "",
       description: "",
       imageUrl: "",
-      featured: false,
+      startDate: new Date(),
+      endDate: new Date(),
+      discount: 0,
       active: true,
     },
   });
 
   useEffect(() => {
-    if (gallery) {
+    if (promotion) {
+      const discountValue =
+        typeof promotion.discount === "object" && promotion.discount !== null
+          ? promotion.discount.toNumber()
+          : promotion.discount;
+
       form.reset({
-        title: gallery.title,
-        description: gallery.description,
-        imageUrl: gallery.imageUrl,
-        featured: gallery.featured ?? false,
-        active: gallery.active ?? true,
+        title: promotion.title,
+        description: promotion.description,
+        imageUrl: promotion.imageUrl,
+        startDate: new Date(promotion.startDate),
+        endDate: new Date(promotion.endDate),
+        discount: discountValue,
+        active: promotion.active ?? true,
       });
     }
-  }, [gallery, form]);
+  }, [promotion, form]);
 
   async function onSubmit(formData: FormValues) {
     setIsLoading(true);
@@ -81,31 +92,33 @@ export function GalleryImageForm({
       title: formData.title.trim(),
       description: formData.description ?? null,
       imageUrl: formData.imageUrl,
-      featured: formData.featured,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      discount: formData.discount ?? null,
       active: formData.active,
     };
 
     try {
-      if (isEditMode && gallery) {
-        const result = await updateGalleryImage(gallery.id, dataToSend);
+      if (isEditMode && promotion) {
+        const result = await updatePromotion(promotion.id, dataToSend);
         if (result.success) {
-          toast.success("Foto atualizada com sucesso!");
+          toast.success("Promoção atualizada com sucesso!");
           if (onSuccess) onSuccess();
         } else {
-          toast.error(result.message || "Erro ao atualizar galeria");
+          toast.error(result.message || "Erro ao atualizar promoção");
         }
       } else {
-        const result = await createGalleryImage(dataToSend);
+        const result = await createPromotion(dataToSend);
         if (result.success) {
-          toast.success("Foto cadastrada com sucesso!");
+          toast.success("Promoção cadastrada com sucesso!");
           form.reset();
           if (onSuccess) {
             onSuccess();
           } else {
-            router.replace("/dashboard/gallery");
+            router.replace("/dashboard/promotions");
           }
         } else {
-          toast.error(result.message || "Erro ao cadastrar uma galeria");
+          toast.error(result.message || "Erro ao cadastrar uma promoção");
         }
       }
     } catch {
@@ -119,7 +132,7 @@ export function GalleryImageForm({
     if (onCancel) {
       onCancel();
     } else {
-      router.replace("/dashboard/gallery");
+      router.replace("/dashboard/promotions");
     }
   };
 
@@ -137,10 +150,10 @@ export function GalleryImageForm({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Título da Foto</FormLabel>
+                  <FormLabel>Título da Promoção</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Ex: Carlos Santos"
+                      placeholder="Ex: Desconto de Verão"
                       {...field}
                       disabled={isLoading}
                     />
@@ -158,7 +171,7 @@ export function GalleryImageForm({
                   <FormLabel>Descrição</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Fale sobre a foto..."
+                      placeholder="Fale sobre a promoção..."
                       {...field}
                       value={field.value ?? ""} // Handle null value
                       disabled={isLoading}
@@ -188,6 +201,53 @@ export function GalleryImageForm({
               )}
             />
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="startDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data de Início</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                        value={
+                          field.value
+                            ? new Date(field.value).toISOString().substring(0, 10)
+                            : ""
+                        }
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="endDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data de Fim</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                        value={
+                          field.value
+                            ? new Date(field.value).toISOString().substring(0, 10)
+                            : ""
+                        }
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
               name="active"
@@ -195,25 +255,6 @@ export function GalleryImageForm({
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray03 p-3 shadow-sm">
                   <div className="space-y-0.5">
                     <FormLabel>Status</FormLabel>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="featured"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray03 p-3 shadow-sm">
-                  <div className="space-y-0.5">
-                    <FormLabel>Destaque</FormLabel>
                   </div>
                   <FormControl>
                     <Switch
@@ -245,7 +286,7 @@ export function GalleryImageForm({
                 ) : isEditMode ? (
                   "Salvar Alterações"
                 ) : (
-                  "Cadastrar Foto"
+                  "Cadastrar Promoção"
                 )}
               </Button>
             </div>

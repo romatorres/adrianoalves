@@ -47,7 +47,7 @@ export interface Promotion {
   imageUrl: string | null;
   startDate: Date;
   endDate: Date;
-  discount: number | null;
+  discount: number | { toNumber: () => number } | null;
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
