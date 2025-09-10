@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { Promotion } from "@/lib/types";
+import { Promotion, PromotionFormData } from "@/lib/types";
 
 export async function getPromotions(): Promise<Promotion[]> {
   try {
@@ -19,7 +19,7 @@ export async function getPromotions(): Promise<Promotion[]> {
   }
 }
 
-export async function createPromotion(data: Omit<Promotion, "id">) {
+export async function createPromotion(data: PromotionFormData) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/promotions`, {
       method: "POST",
@@ -47,7 +47,7 @@ export async function createPromotion(data: Omit<Promotion, "id">) {
 
 export async function updatePromotion(
   promotionId: string,
-  data: Partial<Omit<Promotion, "id">>
+  data: Partial<PromotionFormData>
 ) {
   try {
     const res = await fetch(

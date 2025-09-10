@@ -1,6 +1,6 @@
 "use client";
 
-import { Products } from "@/components/site/Shop/Products";
+/* import { Products } from "@/components/site/Shop/Products"; */
 import Team from "@/components/site/Team/Team";
 import { Promotions } from "@/components/site/Promotions/Promotions";
 import { Hero } from "@/components/site/Hero/Hero";
@@ -21,16 +21,13 @@ export default function Home() {
         <Header />
       </section>
       <Hero />
-      {/* <section id="promotions">
-        <Promotions
-          promotions={promotions}
-          isVisible={sectionsMap.promotions}
-        />
-      </section> */}
+      <section id="promotions">
+        <Promotions promotions={[]} isVisible={sectionsMap.promotions} />
+      </section>
       <section id="about">
         <About />
       </section>
-      {/*
+      {/* 
       <section id="shop">
         <Products products={products} isVisible={sectionsMap.products} />
       </section> */}
@@ -41,7 +38,7 @@ export default function Home() {
         <Services isVisible={sectionsMap.services} />
       </section>
       <section id="gallery">
-        <Gallery isVisible={sectionsMap.gallery} />
+        <Gallery images={[]} isVisible={sectionsMap.gallery} />
       </section>
       <section id="contact">
         <Contact />

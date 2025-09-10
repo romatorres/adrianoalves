@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { createPromotion, updatePromotion } from "../action";
-import { Promotion } from "@/lib/types";
+import { Promotion, PromotionFormData } from "@/lib/types";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 
@@ -29,9 +29,9 @@ const formSchema = z.object({
     .string()
     .min(3, { message: "O título deve ter pelo menos 3 caracteres" }),
   description: z.string().optional().nullable(),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date(),
-  discount: z.coerce.number().optional().nullable(),
+  startDate: z.date(),
+  endDate: z.date(),
+  discount: z.number().optional().nullable(),
   imageUrl: z.string().url("URL da imagem inválida").optional().nullable(),
   active: z.boolean(),
 });
@@ -57,11 +57,11 @@ export function PromotionForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      description: "",
-      imageUrl: "",
+      description: null,
+      imageUrl: null,
       startDate: new Date(),
       endDate: new Date(),
-      discount: 0,
+      discount: null,
       active: true,
     },
   });
@@ -88,10 +88,11 @@ export function PromotionForm({
   async function onSubmit(formData: FormValues) {
     setIsLoading(true);
 
-    const dataToSend = {
+    // Preparar os dados para envio com o tipo correto
+    const dataToSend: PromotionFormData = {
       title: formData.title.trim(),
       description: formData.description ?? null,
-      imageUrl: formData.imageUrl,
+      imageUrl: formData.imageUrl ?? null,
       startDate: formData.startDate,
       endDate: formData.endDate,
       discount: formData.discount ?? null,
@@ -214,7 +215,9 @@ export function PromotionForm({
                         {...field}
                         value={
                           field.value
-                            ? new Date(field.value).toISOString().substring(0, 10)
+                            ? new Date(field.value)
+                                .toISOString()
+                                .substring(0, 10)
                             : ""
                         }
                         disabled={isLoading}
@@ -236,7 +239,9 @@ export function PromotionForm({
                         {...field}
                         value={
                           field.value
-                            ? new Date(field.value).toISOString().substring(0, 10)
+                            ? new Date(field.value)
+                                .toISOString()
+                                .substring(0, 10)
                             : ""
                         }
                         disabled={isLoading}
@@ -247,6 +252,30 @@ export function PromotionForm({
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="discount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Desconto (%)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="10"
+                      {...field}
+                      value={field.value ?? ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(value ? Number(value) : null);
+                      }}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
@@ -281,7 +310,7 @@ export function PromotionForm({
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {isEditMode ? "Salvando..." : "Cadastrando..."}
+                    {isEditMode ? "Salvando..." : "Cadastrar Promoção"}
                   </>
                 ) : isEditMode ? (
                   "Salvar Alterações"

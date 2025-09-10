@@ -3,7 +3,7 @@
 import { useState, useEffect, useTransition } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Calendar, DollarSign, Edit, Plus, Trash2, User } from "lucide-react";
+import { Edit, Plus, Trash2, User } from "lucide-react";
 import Image from "next/image";
 import { Promotion } from "@/lib/types";
 import { getPromotions, deletePromotion } from "./action";
@@ -122,22 +122,21 @@ export default function Promotions() {
                       className="rounded-lg object-cover"
                     />
                   </div>
-                  <div className="flex items-center mb-2">
-                    <div className="h-8 w-8 rounded-full bg-gray04 flex items-center justify-center mr-3">
-                      <User className="h-4 w-4 text-gray01" />
-                    </div>
+                  <div className="flex items-center mb-3">
                     <div>
-                      <p className="font-semibold text-background">
+                      <p className="font-semibold text-background text-xl">
                         {promotion.title}
                       </p>
                     </div>
                   </div>
+                  <div className="flex items-start text-sm text-gray02 mb-3">
+                    <span className="">{promotion.description}</span>
+                  </div>
                   <div className="flex flex-col">
-                    <div className="flex items-center text-gray01 font-semibold mb-3">
-                      <DollarSign className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <div className="flex items-center text-price font-semibold text-lg mb-3">
                       <span className="truncate">
                         {typeof promotion.discount === "number"
-                          ? `${promotion.discount.toFixed(2)}% OFF`
+                          ? `${promotion.discount.toFixed(0)}% OFF`
                           : typeof promotion.discount === "object" &&
                             promotion.discount?.toNumber
                           ? promotion.discount.toNumber().toFixed(2)
@@ -145,16 +144,16 @@ export default function Promotions() {
                       </span>
                     </div>
                     <div className="flex flex-col">
-                      <div className="flex items-center text-gray01 font-semibold mb-3">
-                        <Calendar className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <div className="flex gap-1 items-center text-gray01 text-sm mb-1">
+                        <p>Inicio:</p>
                         <span className="truncate">
                           {new Date(promotion.startDate).toLocaleDateString(
                             "pt-BR"
                           )}
                         </span>
                       </div>
-                      <div className="flex items-center text-gray01 font-semibold mb-3">
-                        <Calendar className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <div className="flex gap-1 items-center text-gray01 text-sm mb-3">
+                        <p>Fim:</p>
                         <span className="truncate">
                           {new Date(promotion.endDate).toLocaleDateString(
                             "pt-BR"
@@ -162,9 +161,6 @@ export default function Promotions() {
                         </span>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-start text-sm text-gray02 mb-3">
-                    <span className="">{promotion.description}</span>
                   </div>
                   <div className="mt-2">
                     <span

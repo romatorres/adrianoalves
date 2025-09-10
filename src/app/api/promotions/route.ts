@@ -44,7 +44,7 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const promotion = await prisma.promotion.findMany({
+    const promotions = await prisma.promotion.findMany({
       select: {
         id: true,
         title: true,
@@ -57,7 +57,13 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json(promotion);
+    // Converter valores Decimal para número
+    const formattedPromotions = promotions.map(promotion => ({
+      ...promotion,
+      discount: promotion.discount ? Number(promotion.discount) : null
+    }));
+
+    return NextResponse.json(formattedPromotions);
   } catch (error) {
     console.error("Error fetching promotion:", error);
     return NextResponse.json(

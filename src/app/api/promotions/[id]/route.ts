@@ -23,7 +23,7 @@ export async function PUT(
       description?: string;
       startDate?: Date;
       endDate?: Date;
-      discount?: Decimal;
+      discount?: Decimal | number | null;
       imageUrl?: string;
       active?: boolean;
     } = {};

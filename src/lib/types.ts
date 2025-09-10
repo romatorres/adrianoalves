@@ -53,6 +53,28 @@ export interface Promotion {
   updatedAt: Date;
 }
 
+// Tipo específico para os dados do formulário de promoções
+export interface PromotionFormData {
+  title: string;
+  description: string | null;
+  imageUrl: string | null;
+  startDate: Date;
+  endDate: Date;
+  discount: number | null;
+  active: boolean;
+}
+
+// Tipo específico para as promoções exibidas no site
+export interface SitePromotion {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string | null;
+  startDate: Date;
+  endDate: Date;
+  discount: number | null;
+}
+
 export interface GalleryImage {
   id: string;
   title: string;
