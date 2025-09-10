@@ -137,11 +137,11 @@ export default function Promotions() {
                       <DollarSign className="h-4 w-4 mr-2 flex-shrink-0" />
                       <span className="truncate">
                         {typeof promotion.discount === "number"
-                          ? promotion.discount.toFixed(2)
+                          ? `${promotion.discount.toFixed(2)}% OFF`
                           : typeof promotion.discount === "object" &&
                             promotion.discount?.toNumber
                           ? promotion.discount.toNumber().toFixed(2)
-                          : "0.00"}
+                          : "Promoção Especial"}
                       </span>
                     </div>
                     <div className="flex flex-col">
