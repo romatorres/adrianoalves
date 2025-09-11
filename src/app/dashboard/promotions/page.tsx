@@ -147,17 +147,21 @@ export default function Promotions() {
                       <div className="flex gap-1 items-center text-gray01 text-sm mb-1">
                         <p>Inicio:</p>
                         <span className="truncate">
-                          {new Date(promotion.startDate).toLocaleDateString(
-                            "pt-BR"
-                          )}
+                          {promotion.startDate
+                            ? new Date(promotion.startDate).toLocaleDateString(
+                                "pt-BR"
+                              )
+                            : "Não definida"}
                         </span>
                       </div>
                       <div className="flex gap-1 items-center text-gray01 text-sm mb-3">
                         <p>Fim:</p>
                         <span className="truncate">
-                          {new Date(promotion.endDate).toLocaleDateString(
-                            "pt-BR"
-                          )}
+                          {promotion.endDate
+                            ? new Date(promotion.endDate).toLocaleDateString(
+                                "pt-BR"
+                              )
+                            : "Não definida"}
                         </span>
                       </div>
                     </div>

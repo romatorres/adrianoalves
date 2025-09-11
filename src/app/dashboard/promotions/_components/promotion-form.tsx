@@ -29,8 +29,8 @@ const formSchema = z.object({
     .string()
     .min(3, { message: "O título deve ter pelo menos 3 caracteres" }),
   description: z.string().optional().nullable(),
-  startDate: z.string().min(1, { message: "Data de início é obrigatória" }),
-  endDate: z.string().min(1, { message: "Data de fim é obrigatória" }),
+  startDate: z.string().optional().nullable(),
+  endDate: z.string().optional().nullable(),
   discount: z.number().optional().nullable(),
   imageUrl: z.string().url("URL da imagem inválida").optional().nullable(),
   active: z.boolean(),
@@ -57,15 +57,16 @@ export function PromotionForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      description: null,
-      imageUrl: null,
-      // Format to YYYY-MM-DD string
-      startDate: new Date().toLocaleDateString("en-CA"),
-      endDate: new Date().toLocaleDateString("en-CA"),
+      description: "",
+      imageUrl: "",
+      startDate: "",
+      endDate: "",
       discount: null,
       active: true,
     },
   });
+
+  const { reset } = form;
 
   useEffect(() => {
     if (promotion) {
@@ -74,18 +75,21 @@ export function PromotionForm({
           ? promotion.discount.toNumber()
           : promotion.discount;
 
-      form.reset({
+      reset({
         title: promotion.title,
         description: promotion.description,
         imageUrl: promotion.imageUrl,
-        // Format to YYYY-MM-DD string, respecting local timezone
-        startDate: new Date(promotion.startDate).toLocaleDateString("en-CA"),
-        endDate: new Date(promotion.endDate).toLocaleDateString("en-CA"),
+        startDate: promotion.startDate
+          ? new Date(promotion.startDate).toLocaleDateString("en-CA")
+          : "",
+        endDate: promotion.endDate
+          ? new Date(promotion.endDate).toLocaleDateString("en-CA")
+          : "",
         discount: discountValue,
         active: promotion.active ?? true,
       });
     }
-  }, [promotion, form]);
+  }, [promotion, reset]);
 
   async function onSubmit(formData: FormValues) {
     setIsLoading(true);
@@ -93,10 +97,14 @@ export function PromotionForm({
     // Convert date strings back to Date objects in local timezone for submission
     const dataToSend: PromotionFormData = {
       title: formData.title.trim(),
-      description: formData.description ?? null,
-      imageUrl: formData.imageUrl ?? null,
-      startDate: new Date(`${formData.startDate}T00:00:00`),
-      endDate: new Date(`${formData.endDate}T00:00:00`),
+      description: formData.description || null,
+      imageUrl: formData.imageUrl || null,
+      startDate: formData.startDate
+        ? new Date(`${formData.startDate}T00:00:00`)
+        : null,
+      endDate: formData.endDate
+        ? new Date(`${formData.endDate}T00:00:00`)
+        : null,
       discount: formData.discount ?? null,
       active: formData.active,
     };
@@ -212,7 +220,12 @@ export function PromotionForm({
                   <FormItem>
                     <FormLabel>Data de Início</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} disabled={isLoading} />
+                      <Input
+                        type="date"
+                        {...field}
+                        value={field.value ?? ""}
+                        disabled={isLoading}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -225,7 +238,12 @@ export function PromotionForm({
                   <FormItem>
                     <FormLabel>Data de Fim</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} disabled={isLoading} />
+                      <Input
+                        type="date"
+                        {...field}
+                        value={field.value ?? ""}
+                        disabled={isLoading}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

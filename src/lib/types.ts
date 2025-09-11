@@ -43,10 +43,10 @@ export interface TeamMemberProps {
 export interface Promotion {
   id: string;
   title: string;
-  description: string;
+  description: string | null;
   imageUrl: string | null;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | null;
+  endDate: Date | null;
   discount: number | { toNumber: () => number } | null;
   active: boolean;
   createdAt: Date;
@@ -58,8 +58,8 @@ export interface PromotionFormData {
   title: string;
   description: string | null;
   imageUrl: string | null;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | null;
+  endDate: Date | null;
   discount: number | null;
   active: boolean;
 }
@@ -68,10 +68,10 @@ export interface PromotionFormData {
 export interface SitePromotion {
   id: string;
   title: string;
-  description: string;
+  description: string | null;
   imageUrl: string | null;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | null;
+  endDate: Date | null;
   discount: number | null;
   active: boolean;
 }

@@ -14,9 +14,9 @@ export async function POST(request: Request) {
       active,
     } = body;
 
-    if (!title || !description || !startDate || !endDate) {
+    if (!title) {
       return NextResponse.json(
-        { message: "Todos os campos são obrigatórios." },
+        { message: "O campo 'título' é obrigatório." },
         { status: 400 }
       );
     }

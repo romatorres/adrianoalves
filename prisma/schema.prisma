@@ -94,10 +94,10 @@ model GalleryImage {
 model Promotion {
   id          String   @id @default(cuid())
   title       String
-  description String
+  description String?
   imageUrl    String?
-  startDate   DateTime
-  endDate     DateTime
+  startDate   DateTime?
+  endDate     DateTime?
   discount    Decimal?
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())
