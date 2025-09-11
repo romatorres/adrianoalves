@@ -8,7 +8,7 @@ interface PromotionCardProps {
 
 export function PromotionCard({ promotion }: PromotionCardProps) {
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full">
       {promotion.imageUrl && (
         <div className="relative w-full aspect-square">
           <Image

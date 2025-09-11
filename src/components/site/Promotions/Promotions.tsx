@@ -15,7 +15,8 @@ export function Promotions({ isVisible = true }: PromotionGridProps) {
       try {
         const res = await fetch("/api/promotions");
         const data = await res.json();
-        setPromotion(data);
+        const activePromotions = data.filter((p: SitePromotion) => p.active);
+        setPromotion(activePromotions);
       } catch (error) {
         console.error("Failed to fetch promotions:", error);
       }
@@ -72,8 +73,14 @@ export function Promotions({ isVisible = true }: PromotionGridProps) {
             />
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {promotion.map((promotion) => (
+        <div
+          className={`grid gap-6 ${
+            promotion.length === 1
+              ? "grid-cols-1 justify-items-center [&>*]:max-w-[50%]"
+              : "grid-cols-1 md:grid-cols-2"
+          }`}
+        >
+          {promotion.slice(0, 2).map((promotion) => (
             <PromotionCard key={promotion.id} promotion={promotion} />
           ))}
         </div>

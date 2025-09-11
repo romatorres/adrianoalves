@@ -73,6 +73,7 @@ export interface SitePromotion {
   startDate: Date;
   endDate: Date;
   discount: number | null;
+  active: boolean;
 }
 
 export interface GalleryImage {

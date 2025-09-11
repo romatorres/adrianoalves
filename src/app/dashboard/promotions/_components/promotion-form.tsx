@@ -23,14 +23,14 @@ import { Promotion, PromotionFormData } from "@/lib/types";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 
-// Unified schema for creating and editing a promotion
+// Schema using string for dates to avoid timezone issues within the form
 const formSchema = z.object({
   title: z
     .string()
     .min(3, { message: "O título deve ter pelo menos 3 caracteres" }),
   description: z.string().optional().nullable(),
-  startDate: z.date(),
-  endDate: z.date(),
+  startDate: z.string().min(1, { message: "Data de início é obrigatória" }),
+  endDate: z.string().min(1, { message: "Data de fim é obrigatória" }),
   discount: z.number().optional().nullable(),
   imageUrl: z.string().url("URL da imagem inválida").optional().nullable(),
   active: z.boolean(),
@@ -59,8 +59,9 @@ export function PromotionForm({
       title: "",
       description: null,
       imageUrl: null,
-      startDate: new Date(),
-      endDate: new Date(),
+      // Format to YYYY-MM-DD string
+      startDate: new Date().toLocaleDateString("en-CA"),
+      endDate: new Date().toLocaleDateString("en-CA"),
       discount: null,
       active: true,
     },
@@ -77,8 +78,9 @@ export function PromotionForm({
         title: promotion.title,
         description: promotion.description,
         imageUrl: promotion.imageUrl,
-        startDate: new Date(promotion.startDate),
-        endDate: new Date(promotion.endDate),
+        // Format to YYYY-MM-DD string, respecting local timezone
+        startDate: new Date(promotion.startDate).toLocaleDateString("en-CA"),
+        endDate: new Date(promotion.endDate).toLocaleDateString("en-CA"),
         discount: discountValue,
         active: promotion.active ?? true,
       });
@@ -88,13 +90,13 @@ export function PromotionForm({
   async function onSubmit(formData: FormValues) {
     setIsLoading(true);
 
-    // Preparar os dados para envio com o tipo correto
+    // Convert date strings back to Date objects in local timezone for submission
     const dataToSend: PromotionFormData = {
       title: formData.title.trim(),
       description: formData.description ?? null,
       imageUrl: formData.imageUrl ?? null,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
+      startDate: new Date(`${formData.startDate}T00:00:00`),
+      endDate: new Date(`${formData.endDate}T00:00:00`),
       discount: formData.discount ?? null,
       active: formData.active,
     };
@@ -210,18 +212,7 @@ export function PromotionForm({
                   <FormItem>
                     <FormLabel>Data de Início</FormLabel>
                     <FormControl>
-                      <Input
-                        type="date"
-                        {...field}
-                        value={
-                          field.value
-                            ? new Date(field.value)
-                                .toISOString()
-                                .substring(0, 10)
-                            : ""
-                        }
-                        disabled={isLoading}
-                      />
+                      <Input type="date" {...field} disabled={isLoading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -234,18 +225,7 @@ export function PromotionForm({
                   <FormItem>
                     <FormLabel>Data de Fim</FormLabel>
                     <FormControl>
-                      <Input
-                        type="date"
-                        {...field}
-                        value={
-                          field.value
-                            ? new Date(field.value)
-                                .toISOString()
-                                .substring(0, 10)
-                            : ""
-                        }
-                        disabled={isLoading}
-                      />
+                      <Input type="date" {...field} disabled={isLoading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
