@@ -66,7 +66,7 @@ export async function deleteUser(userId: string) {
     }
 
     revalidatePath("/dashboard/settings/users");
-    return { success: true, data: await res.json() };
+    return { success: true };
   } catch (error) {
     console.error("Erro ao deletar o usuário:", error);
     if (error instanceof Error) {
