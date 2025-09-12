@@ -62,7 +62,7 @@ export function Contact() {
               <a
                 href="https://wa.me/75988460046"
                 target="_blank"
-                className="inline-flex items-center hover:text-primary mb-1"
+                className="inline-flex items-center mb-1 duration-400 hover:text-primary"
               >
                 <Image
                   src="img/whatsapp.svg"
@@ -73,7 +73,7 @@ export function Contact() {
                 />
                 75 98846-0046
               </a>
-              <p className="mb-4">
+              <p className="mb-4 hover:text-primary duration-700">
                 <a href="https://gmail.com" target="_blank">
                   caioadrianoteixeira@gmail.com
                 </a>
@@ -86,7 +86,7 @@ export function Contact() {
                   alt="Icone Instagram"
                   width={34}
                   height={34}
-                  className="object-contain"
+                  className="object-contain hover:-translate-y-0.5 duration-300"
                 />
               </a>
               <a href="#">
@@ -95,7 +95,7 @@ export function Contact() {
                   alt="Icone X"
                   width={34}
                   height={34}
-                  className="object-contain"
+                  className="object-contain hover:-translate-y-0.5 duration-300"
                 />
               </a>
               <a href="#">
@@ -104,7 +104,7 @@ export function Contact() {
                   alt="Icone Face"
                   width={34}
                   height={34}
-                  className="object-contain"
+                  className="object-contain hover:-translate-y-0.5 duration-300"
                 />
               </a>
             </div>

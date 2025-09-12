@@ -8,7 +8,7 @@ interface PromotionCardProps {
 
 export function PromotionCard({ promotion }: PromotionCardProps) {
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full flex flex-col h-full">
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full flex flex-col h-fit">
       {promotion.imageUrl && (
         <div className="relative w-full aspect-square flex-shrink-0">
           <Image
@@ -24,10 +24,10 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
           <h3 className="text-2xl font-bold mb-2">{promotion.title}</h3>
           <p className="text-gray-01 mb-4">{promotion.description}</p>
         </div>
-        <div className="text-sm text-gray-03 mt-auto">
-          <div className="flex justify-between items-center">
+        <div className="text-sm text-gray-03 mt-4">
+          <div className="flex justify-between items-end">
             {promotion.discount && (
-              <div className="bg-background rounded-lg px-3 py-1">
+              <div className="bg-background rounded-sm px-4 py-2">
                 <p className="text-primary font-bold text-2xl flex items-center">
                   {promotion.discount}%
                   <span className="text-sm font-semibold ml-1">OFF</span>
@@ -40,7 +40,7 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
               target="_blank"
               className="ml-auto"
             >
-              <button className="bg-primary hover:bg-gray01 font-medium text-background hover:text-white text-sm py-3 px-6 rounded-full transition-colors duration-300 cursor-pointer">
+              <button className="bg-primary hover:bg-amber-300 font-semibold text-background text-sm font-tertiary py-3 px-6 rounded-full transition-colors duration-300 cursor-pointer">
                 Consultar
               </button>
             </Link>

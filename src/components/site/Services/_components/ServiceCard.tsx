@@ -42,7 +42,7 @@ export function ServiceCard({ service }: { service: Service }) {
             </p>
           </div>
           <Link href="https://avec.app/adrianoalves/" target="_blank">
-            <button className="rounded-full bg-primary hover:bg-primary-hover py-2.5 px-4 text-sm font-tertiary text-background font-medium transition-colors duration-300 hover:text-white cursor-pointer">
+            <button className="rounded-full bg-primary hover:bg-amber-300 py-2.5 px-4 text-sm font-tertiary text-background font-semibold transition-colors duration-300 cursor-pointer">
               Agendar
             </button>
           </Link>

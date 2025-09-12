@@ -119,7 +119,7 @@ export function About() {
                 <Link
                   href="https://avec.app/adrianoalves/"
                   target="_blank"
-                  className="w-full sm:w-auto bg-primary text-black-secondary px-12 py-4 rounded-full font-semibold text-center hover:bg-background hover:text-secondary transition-colors duration-300"
+                  className="w-full sm:w-auto bg-primary text-background px-12 py-4 rounded-full font-semibold text-center hover:bg-secondary transition-colors duration-300"
                 >
                   AGENDE UM HORÁRIO
                 </Link>

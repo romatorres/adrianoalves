@@ -29,6 +29,7 @@ export function Hero() {
               <a
                 href="https://www.instagram.com/adriano.alves.barbearia/"
                 target="_blank"
+                className="hover:-translate-y-0.5 duration-300"
               >
                 <Image
                   src="/img/icon_insta.svg"
@@ -37,7 +38,7 @@ export function Hero() {
                   height={38}
                 />
               </a>
-              <a href="#">
+              <a href="#" className="hover:-translate-y-0.5 duration-300">
                 <Image
                   src="/img/icon_X.svg"
                   alt="Icone Instagam"
@@ -45,7 +46,7 @@ export function Hero() {
                   height={38}
                 />
               </a>
-              <a href="#">
+              <a href="#" className="hover:-translate-y-0.5 duration-300">
                 <Image
                   src="/img/icon_face.svg"
                   alt="Icone Instagam"
