@@ -8,9 +8,9 @@ interface PromotionCardProps {
 
 export function PromotionCard({ promotion }: PromotionCardProps) {
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full">
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full flex flex-col h-full">
       {promotion.imageUrl && (
-        <div className="relative w-full aspect-square">
+        <div className="relative w-full aspect-square flex-shrink-0">
           <Image
             src={promotion.imageUrl}
             alt={promotion.title}
@@ -19,11 +19,13 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
           />
         </div>
       )}
-      <div className="p-4">
-        <h3 className="text-2xl font-bold mb-2">{promotion.title}</h3>
-        <p className="text-gray-01 mb-4">{promotion.description}</p>
-        <div className="text-sm text-gray-03">
-          <div className="flex justify-between items-center mt-6">
+      <div className="p-4 flex flex-col flex-grow">
+        <div className="flex-grow">
+          <h3 className="text-2xl font-bold mb-2">{promotion.title}</h3>
+          <p className="text-gray-01 mb-4">{promotion.description}</p>
+        </div>
+        <div className="text-sm text-gray-03 mt-auto">
+          <div className="flex justify-between items-center">
             {promotion.discount && (
               <div className="bg-background rounded-lg px-3 py-1">
                 <p className="text-primary font-bold text-2xl flex items-center">
@@ -32,8 +34,13 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
                 </p>
               </div>
             )}
-            <Link href="https://wa.me/75988460046" target="_blank">
-              <button className="bg-primary hover:bg-black_secondary font-medium text-background hover:text-white text-sm py-3 px-6 rounded-full transition-colors duration-300">
+
+            <Link
+              href="https://wa.me/75988460046?text=Olá!%20Vim%20pelo%20seu%20site."
+              target="_blank"
+              className="ml-auto"
+            >
+              <button className="bg-primary hover:bg-gray01 font-medium text-background hover:text-white text-sm py-3 px-6 rounded-full transition-colors duration-300 cursor-pointer">
                 Consultar
               </button>
             </Link>

@@ -58,8 +58,6 @@ export interface PromotionFormData {
   title: string;
   description: string | null;
   imageUrl: string | null;
-  startDate: Date | null;
-  endDate: Date | null;
   discount: number | null;
   active: boolean;
 }

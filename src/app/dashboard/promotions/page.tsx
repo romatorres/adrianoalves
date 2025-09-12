@@ -143,28 +143,6 @@ export default function Promotions() {
                           : "Promoção Especial"}
                       </span>
                     </div>
-                    <div className="flex flex-col">
-                      <div className="flex gap-1 items-center text-gray01 text-sm mb-1">
-                        <p>Inicio:</p>
-                        <span className="truncate">
-                          {promotion.startDate
-                            ? new Date(promotion.startDate).toLocaleDateString(
-                                "pt-BR"
-                              )
-                            : "Não definida"}
-                        </span>
-                      </div>
-                      <div className="flex gap-1 items-center text-gray01 text-sm mb-3">
-                        <p>Fim:</p>
-                        <span className="truncate">
-                          {promotion.endDate
-                            ? new Date(promotion.endDate).toLocaleDateString(
-                                "pt-BR"
-                              )
-                            : "Não definida"}
-                        </span>
-                      </div>
-                    </div>
                   </div>
                   <div className="mt-2">
                     <span
