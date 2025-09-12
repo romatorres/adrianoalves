@@ -27,8 +27,8 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
         <div className="text-sm text-gray-03 mt-4">
           <div className="flex justify-between items-end">
             {promotion.discount && (
-              <div className="bg-background rounded-sm px-4 py-2">
-                <p className="text-primary font-bold text-2xl flex items-center">
+              <div className="border border-background rounded-sm px-3 py-1">
+                <p className="text-background font-bold text-2xl flex items-center">
                   {promotion.discount}%
                   <span className="text-sm font-semibold ml-1">OFF</span>
                 </p>
@@ -36,7 +36,7 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
             )}
 
             <Link
-              href="https://wa.me/75988460046?text=Olá!%20Vim%20pelo%20seu%20site."
+              href="https://wa.me/75988460046?text=Olá!%20Vi%20seu%20site%20e%20gostaria%20de%20mais%20informações."
               target="_blank"
               className="ml-auto"
             >

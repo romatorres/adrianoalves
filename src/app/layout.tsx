@@ -3,6 +3,7 @@ import { Poller_One, Ubuntu, Nunito, Bebas_Neue } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { SectionDataProvider } from "@/components/SectionDataProvider";
 import "./globals.css";
+import ConditionalWhatsApp from "@/components/whatsapp/ConditionalWhatsApp";
 
 const pollerOne = Poller_One({
   weight: "400",
@@ -44,6 +45,7 @@ export default function RootLayout({
       >
         <SectionDataProvider>
           {children}
+          <ConditionalWhatsApp />
           <Toaster position="top-right" />
         </SectionDataProvider>
       </body>

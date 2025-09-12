@@ -60,7 +60,7 @@ export function Contact() {
             </h3>
             <div className="text-white font-secondary md:text-xl text-lg">
               <a
-                href="https://wa.me/75988460046"
+                href="https://wa.me/75988460046?text=Olá!%20Vi%20seu%20site%20e%20gostaria%20de%20mais%20informações."
                 target="_blank"
                 className="inline-flex items-center mb-1 duration-400 hover:text-primary"
               >
