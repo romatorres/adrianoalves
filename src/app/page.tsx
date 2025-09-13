@@ -22,7 +22,7 @@ export default function Home() {
       </section>
       <Hero />
       <section id="promotions">
-        <Promotions promotions={[]} isVisible={sectionsMap.promotions} />
+        <Promotions isVisible={sectionsMap.promotions} />
       </section>
       <section id="about">
         <About />

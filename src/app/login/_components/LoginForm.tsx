@@ -31,7 +31,6 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const form = useForm<LoginFormValues>({
@@ -78,7 +77,7 @@ export function LoginForm() {
                   placeholder="nome@email.com"
                   type="email"
                   {...field}
-                  disabled={isLoading}
+                  disabled={form.formState.isSubmitting}
                 />
               </FormControl>
               <FormMessage />
@@ -98,7 +97,7 @@ export function LoginForm() {
                     placeholder="••••••••"
                     type={showPassword ? "text" : "password"}
                     {...field}
-                    disabled={isLoading}
+                    disabled={form.formState.isSubmitting}
                   />
                   <Button
                     type="button"
@@ -106,7 +105,7 @@ export function LoginForm() {
                     size="sm"
                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
-                    disabled={isLoading}
+                    disabled={form.formState.isSubmitting}
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4 text-muted-foreground" />
