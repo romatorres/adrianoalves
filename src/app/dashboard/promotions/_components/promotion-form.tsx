@@ -6,6 +6,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,7 @@ import { createPromotion, updatePromotion } from "../action";
 import { Promotion, PromotionFormData } from "@/lib/types";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { UploadButton } from "@/components/ui/upload-button";
 
 // Schema using string for dates to avoid timezone issues within the form
 const formSchema = z.object({
@@ -182,14 +184,44 @@ export function PromotionForm({
               name="imageUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>URL da Imagem</FormLabel>
+                  <FormLabel>Imagem da Promoção</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="https://exemplo.com/imagem.png"
-                      {...field}
-                      value={field.value ?? ""} // Handle null value
-                      disabled={isLoading}
-                    />
+                    <div className="min-h-[40px]">
+                      {field.value ? (
+                        <div className="relative mt-2 w-fit">
+                          <Image
+                            src={field.value}
+                            alt="Imagem da promoção"
+                            width={200}
+                            height={200}
+                            className="rounded-md object-cover"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            className="absolute top-2 right-2"
+                            onClick={() => field.onChange("")}
+                            disabled={isLoading}
+                          >
+                            Remover
+                          </Button>
+                        </div>
+                      ) : (
+                        <UploadButton
+                          endpoint="imageUploader"
+                          onClientUploadComplete={(res) => {
+                            if (res && res.length > 0) {
+                              field.onChange(res[0].url);
+                              toast.success("Upload concluído!");
+                            }
+                          }}
+                          onUploadError={(error: Error) => {
+                            toast.error(`Falha no upload: ${error.message}`);
+                          }}
+                        />
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
