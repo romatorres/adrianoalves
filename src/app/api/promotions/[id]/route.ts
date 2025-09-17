@@ -2,12 +2,35 @@ import { prisma } from "@/lib/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
 import { NextResponse } from "next/server";
 
-export async function PUT(
+export async function GET(
   request: Request,
-  context: { params: Promise<{ id: string }> }
+  context: { params: { id: string } }
 ) {
   try {
-    const { id } = await context.params;
+    const { id } = context.params;
+    const promotion = await prisma.promotion.findUnique({
+      where: { id: id },
+    });
+
+    if (!promotion) {
+      return NextResponse.json({ message: "Promoção não encontrada." }, { status: 404 });
+    }
+
+    return NextResponse.json(promotion);
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Erro ao buscar uma promoção." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  request: Request,
+  context: { params: { id: string } }
+) {
+  try {
+    const { id } = context.params;
     const {
       title,
       description,
@@ -51,7 +74,6 @@ export async function PUT(
 
     return NextResponse.json(updatedpromotion);
   } catch (error) {
-    console.error("Error editing promotion:", error);
     return NextResponse.json(
       { message: "Erro ao editar uma promoção." },
       { status: 500 }
@@ -61,16 +83,15 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  context: { params: Promise<{ id: string }> }
+  context: { params: { id: string } }
 ) {
   try {
-    const { id } = await context.params;
+    const { id } = context.params;
     await prisma.promotion.delete({
       where: { id: id },
     });
     return new NextResponse(null, { status: 204 });
   } catch (error) {
-    console.error("Error deleting promotion:", error);
     return NextResponse.json(
       { message: "Erro ao excluir uma promoção." },
       { status: 500 }

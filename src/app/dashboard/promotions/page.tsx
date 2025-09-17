@@ -56,7 +56,7 @@ export default function Promotions() {
     startTransition(async () => {
       const result = await deletePromotion(selectedPromotion.id);
       if (result.success) {
-        toast.success("Promoçõ excluída com sucesso!");
+        toast.success("Promoção excluída com sucesso!");
         // Refetch services
         const fetchedPromotions = await getPromotions();
         setPromotions(fetchedPromotions);

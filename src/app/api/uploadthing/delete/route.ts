@@ -25,7 +25,6 @@ export async function POST(req: NextRequest) {
     await utapi.deleteFiles(fileKey);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Erro ao deletar o arquivo:", error);
     return NextResponse.json(
       { error: "Erro ao deletar o arquivo" },
       { status: 500 }

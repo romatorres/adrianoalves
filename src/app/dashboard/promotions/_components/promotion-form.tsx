@@ -225,12 +225,9 @@ export function PromotionForm({
                         <UploadDropzone
                           endpoint="imageUploader"
                           appearance={{
-                            button: "bg-primary text-red-200 p-3 rounded-md",
+                            button: "bg-gray03 p-3 rounded-md",
                             container:
-                              "w-full border border-dashed border-gray-400 hover:bg-white",
-                          }}
-                          content={{
-                            button: "Selecione Imagem",
+                              "w-full border border-dashed border-gray-400 hover:bg-white cursor-pointer",
                           }}
                           onClientUploadComplete={(res) => {
                             if (res && res.length > 0) {

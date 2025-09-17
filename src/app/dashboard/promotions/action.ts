@@ -2,6 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { Promotion, PromotionFormData } from "@/lib/types";
+import { UTApi } from "uploadthing/server";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
+const utapi = new UTApi();
 
 export async function getPromotions(): Promise<Promotion[]> {
   try {
@@ -12,8 +17,7 @@ export async function getPromotions(): Promise<Promotion[]> {
       throw new Error("Erro ao buscar promoções");
     }
     return await res.json();
-  } catch (error) {
-    console.error("Erro ao buscar promoções:", error);
+  } catch {
     // Em caso de erro, retorna um array vazio para não quebrar a UI
     return [];
   }
@@ -37,7 +41,6 @@ export async function createPromotion(data: PromotionFormData) {
     revalidatePath("/dashboard/promotions");
     return { success: true, data: await res.json() };
   } catch (error) {
-    console.error("Erro ao criar a promoção!", error);
     if (error instanceof Error) {
       return { success: false, message: error.message };
     }
@@ -49,6 +52,10 @@ export async function updatePromotion(
   promotionId: string,
   data: Partial<PromotionFormData>
 ) {
+  const session = await auth.api.getSession({ headers: headers() });
+  if (!session) {
+    return { success: false, message: "Não autorizado." };
+  }
   try {
     // Busca a promoção existente para verificar a imagem antiga
     const existingPromotionRes = await fetch(
@@ -68,13 +75,7 @@ export async function updatePromotion(
         existingPromotion.imageUrl.lastIndexOf("/") + 1
       );
       // Deleta a imagem antiga
-      await fetch(`${process.env.NEXT_PUBLIC_URL}/api/uploadthing/delete`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ fileKey }),
-      });
+      await utapi.deleteFiles(fileKey);
     }
 
     // Atualiza a promoção com os novos dados
@@ -97,7 +98,6 @@ export async function updatePromotion(
     revalidatePath("/dashboard/promotions");
     return { success: true, data: await res.json() };
   } catch (error) {
-    console.error("Erro ao atualizar a promoção!", error);
     if (error instanceof Error) {
       return { success: false, message: error.message };
     }
@@ -106,6 +106,10 @@ export async function updatePromotion(
 }
 
 export async function deletePromotion(promotionId: string) {
+  const session = await auth.api.getSession({ headers: headers() });
+  if (!session) {
+    return { success: false, message: "Não autorizado." };
+  }
   try {
     // Primeiro, busca a promoção para obter a URL da imagem
     const promotionRes = await fetch(
@@ -121,13 +125,7 @@ export async function deletePromotion(promotionId: string) {
       const fileKey = promotion.imageUrl.substring(
         promotion.imageUrl.lastIndexOf("/") + 1
       );
-      await fetch(`${process.env.NEXT_PUBLIC_URL}/api/uploadthing/delete`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ fileKey }),
-      });
+      await utapi.deleteFiles(fileKey);
     }
 
     // Depois, exclui a promoção do banco de dados
@@ -145,11 +143,7 @@ export async function deletePromotion(promotionId: string) {
 
     revalidatePath("/dashboard/promotions");
     return { success: true };
-  } catch (error) {
-    console.error("Erro ao deletar a promoção!", error);
-    if (error instanceof Error) {
-      return { success: false, message: error.message };
-    }
+  } catch {
     return { success: false, message: "Ocorreu um erro desconhecido." };
   }
 }
