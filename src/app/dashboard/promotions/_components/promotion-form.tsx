@@ -23,7 +23,8 @@ import { createPromotion, updatePromotion } from "../action";
 import { Promotion, PromotionFormData } from "@/lib/types";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { UploadButton } from "@/components/ui/upload-button";
+import { UploadDropzone } from "@/components/ui/upload-button";
+import { deleteFile } from "@/lib/uploadthing-actions";
 
 // Schema using string for dates to avoid timezone issues within the form
 const formSchema = z.object({
@@ -201,15 +202,36 @@ export function PromotionForm({
                             variant="destructive"
                             size="sm"
                             className="absolute top-2 right-2"
-                            onClick={() => field.onChange("")}
+                            onClick={async () => {
+                              if (field.value) {
+                                const fileKey = field.value.substring(
+                                  field.value.lastIndexOf("/") + 1
+                                );
+                                const result = await deleteFile(fileKey);
+                                if (result.success) {
+                                  toast.success("Imagem removida com sucesso!");
+                                  field.onChange("");
+                                } else {
+                                  toast.error("Erro ao remover a imagem.");
+                                }
+                              }
+                            }}
                             disabled={isLoading}
                           >
                             Remover
                           </Button>
                         </div>
                       ) : (
-                        <UploadButton
+                        <UploadDropzone
                           endpoint="imageUploader"
+                          appearance={{
+                            button: "bg-primary text-red-200 p-3 rounded-md",
+                            container:
+                              "w-full border border-dashed border-gray-400 hover:bg-white",
+                          }}
+                          content={{
+                            button: "Selecione Imagem",
+                          }}
                           onClientUploadComplete={(res) => {
                             if (res && res.length > 0) {
                               field.onChange(res[0].url);

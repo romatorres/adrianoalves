@@ -18,7 +18,7 @@ export function Hero() {
           </p>
           <div className="flex flex-col md:flex-row items-center lg:justify-start md:justify-center gap-10 md:gap-24">
             <a
-              href="https://avec.app/adrianoalves/"
+              href="https://cashbarber.com.br/barbeariaadrianoalves/login"
               target="_blank"
               className="w-full sm:w-auto bg-primary text-black-secondary px-12 py-4 rounded-full font-semibold text-center
                      hover:bg-secondary transition-colors duration-300"

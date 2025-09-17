@@ -50,6 +50,34 @@ export async function updatePromotion(
   data: Partial<PromotionFormData>
 ) {
   try {
+    // Busca a promoção existente para verificar a imagem antiga
+    const existingPromotionRes = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/promotions/${promotionId}`
+    );
+    if (!existingPromotionRes.ok) {
+      throw new Error("Promoção não encontrada para atualização.");
+    }
+    const existingPromotion: Promotion = await existingPromotionRes.json();
+
+    // Verifica se a URL da imagem mudou e se a antiga existia
+    if (
+      data.imageUrl !== existingPromotion.imageUrl &&
+      existingPromotion.imageUrl
+    ) {
+      const fileKey = existingPromotion.imageUrl.substring(
+        existingPromotion.imageUrl.lastIndexOf("/") + 1
+      );
+      // Deleta a imagem antiga
+      await fetch(`${process.env.NEXT_PUBLIC_URL}/api/uploadthing/delete`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ fileKey }),
+      });
+    }
+
+    // Atualiza a promoção com os novos dados
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/promotions/${promotionId}`,
       {
@@ -79,6 +107,30 @@ export async function updatePromotion(
 
 export async function deletePromotion(promotionId: string) {
   try {
+    // Primeiro, busca a promoção para obter a URL da imagem
+    const promotionRes = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/promotions/${promotionId}`
+    );
+    if (!promotionRes.ok) {
+      throw new Error("Promoção não encontrada.");
+    }
+    const promotion: Promotion = await promotionRes.json();
+
+    // Se existir uma imagem, exclui do UploadThing
+    if (promotion.imageUrl) {
+      const fileKey = promotion.imageUrl.substring(
+        promotion.imageUrl.lastIndexOf("/") + 1
+      );
+      await fetch(`${process.env.NEXT_PUBLIC_URL}/api/uploadthing/delete`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ fileKey }),
+      });
+    }
+
+    // Depois, exclui a promoção do banco de dados
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/promotions/${promotionId}`,
       {
@@ -87,7 +139,7 @@ export async function deletePromotion(promotionId: string) {
     );
 
     if (!res.ok) {
-      const errorData = await res.json().catch(() => ({})); // Tenta pegar corpo do erro
+      const errorData = await res.json().catch(() => ({}));
       throw new Error(errorData.message || "Erro ao excluir a promoção");
     }
 

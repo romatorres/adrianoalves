@@ -60,7 +60,7 @@ export default function Team({ isVisible = true }: TeamGridProps) {
         </div>
         <div className="flex flex-col sm:flex-row justify-center gap-6 sm:space-x-6 mt-16">
           <a
-            href="https://avec.app/adrianoalves/"
+            href="https://cashbarber.com.br/barbeariaadrianoalves/login"
             target="_blank"
             className=" bg-background text-secondary px-12 py-4 rounded-full font-semibold text-center hover:bg-primary hover:text-background transition-colors duration-300"
           >

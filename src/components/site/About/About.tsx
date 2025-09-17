@@ -85,20 +85,15 @@ export function About() {
       </div>
       {/* Nossa Historia */}
       <div className="bg-black-secondary w-full">
-        <div className="max-w-[1280px] mx-auto px-4 md:px-6">
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-24 items-center py-12 md:py-16 lg:py-20">
-            {/* Foto - Aparece primeiro no mobile */}
-            <div className=" lg:order-2 lg:px-0 px-3 relative h-[412px] w-[320px] mx-auto lg:mx-0">
-              <Image
-                src="/img/adriano_quemsomos.jpg"
-                alt="Fundador da Barbearia"
-                fill
-                className="object-cover rounded-xl h"
-              />
-            </div>
-            {/* Texto - Aparece segundo no mobile */}
-            <div className="lg:w-[60%] w-full lg:order-1 lg:text-left text-center">
-              <h3 className="text-2xl md:text-4xl font-secondary font-semibold mb-8 text-primary">
+        <div className="relative mx-auto max-w-[1280px] px-4 md:px-6">
+          {/* 
+            This container provides the vertical padding for the section.
+            On mobile (default), it has a large padding-bottom to create space for the absolutely positioned image.
+            On desktop (lg), the bottom padding is reduced because the image moves to the side.
+          */}
+          <div className="pt-12 pb-[480px] md:pt-16 lg:pt-20 lg:pb-20">
+            <div className="w-full text-center lg:w-[60%] lg:text-left">
+              <h3 className="text-2xl font-secondary font-semibold text-primary mb-8 md:text-4xl">
                 NOSSA HISTÓRIA
               </h3>
               <p className="text-secondary font-tertiary mb-4 text-lg">
@@ -111,20 +106,30 @@ export function About() {
                 especialistas apaixonados pelo que fazem.
               </p>
               <div className="text-secondary mb-16">
-                <span className="font-semibold text-xl">Adriano Alves</span> -
+                <span className="text-xl font-semibold">Adriano Alves</span> -
                 <span className="text-base">Diretor e Fundador</span>
               </div>
 
-              <div className="flex flex-col sm:flex-row justify-center lg:justify-start mt-12 md:mt-auto">
+              <div className="mt-12 flex flex-col justify-center sm:flex-row lg:mt-auto lg:justify-start">
                 <Link
-                  href="https://avec.app/adrianoalves/"
+                  href="https://cashbarber.com.br/barbeariaadrianoalves/login"
                   target="_blank"
-                  className="w-full sm:w-auto bg-primary text-background px-12 py-4 rounded-full font-semibold text-center hover:bg-secondary transition-colors duration-300"
+                  className="w-full rounded-full bg-primary px-12 py-4 text-center font-semibold text-background transition-colors duration-300 hover:bg-secondary sm:w-auto"
                 >
                   AGENDE UM HORÁRIO
                 </Link>
               </div>
             </div>
+          </div>
+
+          {/* The image is positioned absolutely relative to the container above. */}
+          <div className="absolute bottom-0 left-1/2 h-[412px] w-[320px] -translate-x-1/2 lg:left-auto lg:right-6 lg:translate-x-0">
+            <Image
+              src="/img/adriano_sobre.png"
+              alt="Fundador da Barbearia"
+              fill
+              className="rounded-xl object-cover"
+            />
           </div>
         </div>
       </div>
