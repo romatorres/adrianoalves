@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { createContext, useContext, ReactNode } from "react";
 
 type SectionsMap = Record<string, boolean>;
 
@@ -22,50 +16,15 @@ export const useSectionData = () => {
 
 interface SectionDataProviderProps {
   children: ReactNode;
+  initialData: SectionsMap;
 }
 
-export function SectionDataProvider({ children }: SectionDataProviderProps) {
-  const [sectionsMap, setSectionsMap] = useState<SectionsMap>({});
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchSections = async () => {
-      try {
-        const sectionsResponse = await fetch(
-          `${
-            process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-          }/api/sections`,
-          { cache: "no-store" }
-        );
-        const sections = await sectionsResponse.json();
-
-        const newSectionsMap = sections.reduce(
-          (
-            acc: SectionsMap,
-            section: { name: string; active: boolean }
-          ) => {
-            acc[section.name] = section.active;
-            return acc;
-          },
-          {} as SectionsMap
-        );
-        setSectionsMap(newSectionsMap);
-      } catch (error) {
-        console.error("Failed to fetch sections:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchSections();
-  }, []);
-
-  if (isLoading) {
-    return null; 
-  }
-
+export function SectionDataProvider({
+  children,
+  initialData,
+}: SectionDataProviderProps) {
   return (
-    <SectionContext.Provider value={sectionsMap}>
+    <SectionContext.Provider value={initialData}>
       {children}
     </SectionContext.Provider>
   );

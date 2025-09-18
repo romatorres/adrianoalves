@@ -4,6 +4,25 @@ import { Toaster } from "@/components/ui/sonner";
 import { SectionDataProvider } from "@/components/SectionDataProvider";
 import "./globals.css";
 import ConditionalWhatsApp from "@/components/whatsapp/ConditionalWhatsApp";
+import { prisma } from "@/lib/prisma";
+import { unstable_noStore as noStore } from "next/cache";
+
+async function getSectionsMap() {
+  noStore();
+  try {
+    const sections = await prisma.sectionVisibility.findMany({
+      select: { name: true, active: true },
+    });
+    const sectionsMap = sections.reduce((acc, section) => {
+      acc[section.name] = section.active;
+      return acc;
+    }, {} as Record<string, boolean>);
+    return sectionsMap;
+  } catch (error) {
+    console.error("Error fetching sections for layout:", error);
+    return { gallery: true, products: true, promotions: true, services: true, team: true };
+  }
+}
 
 const pollerOne = Poller_One({
   weight: "400",
@@ -33,17 +52,18 @@ export const metadata: Metadata = {
   description: "Corte perfeito, estilo único!",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const sectionsMap = await getSectionsMap();
   return (
     <html lang="pt-BR">
       <body
         className={`${pollerOne.variable} ${ubuntu.variable} ${nunito.variable} ${bebasNeue.variable} antialiased`}
       >
-        <SectionDataProvider>
+        <SectionDataProvider initialData={sectionsMap}>
           {children}
           <ConditionalWhatsApp />
           <Toaster position="top-right" />
