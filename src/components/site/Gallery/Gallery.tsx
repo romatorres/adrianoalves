@@ -13,27 +13,32 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { GalleryCardSkeleton } from "./_components/GalleryCardSkeleton";
 
 export default function Gallery({ isVisible = true }: GalleryGridProps) {
-  const [image, setImage] = useState<GalleryImage[]>([]);
+  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
     null
   );
 
   useEffect(() => {
-    const fetchImage = async () => {
+    const fetchImages = async () => {
+      setIsLoading(true);
       try {
         const res = await fetch("/api/gallery");
         const data = await res.json();
-        setImage(data);
+        setImages(data);
       } catch (error) {
         console.error("Failed to fetch images:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     if (isVisible) {
-      fetchImage();
+      fetchImages();
     }
   }, [isVisible]);
 
@@ -50,7 +55,7 @@ export default function Gallery({ isVisible = true }: GalleryGridProps) {
   };
 
   const handleNextImage = () => {
-    if (selectedImageIndex !== null && selectedImageIndex < image.length - 1) {
+    if (selectedImageIndex !== null && selectedImageIndex < images.length - 1) {
       setSelectedImageIndex(selectedImageIndex + 1);
     }
   };
@@ -62,6 +67,47 @@ export default function Gallery({ isVisible = true }: GalleryGridProps) {
   };
 
   if (!isVisible) return null;
+
+  const renderSkeletons = () => (
+    <CarouselContent className="-ml-2 md:-ml-4">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <CarouselItem
+          key={index}
+          className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+        >
+          <GalleryCardSkeleton />
+        </CarouselItem>
+      ))}
+    </CarouselContent>
+  );
+
+  const renderGallery = () => {
+    if (images.length === 0) {
+      return (
+        <div className="text-center text-gray-600 py-10">
+          Nenhuma imagem na galeria.
+        </div>
+      );
+    }
+
+    return (
+      <CarouselContent className="-ml-2 md:-ml-4">
+        {images.map((image, index) => (
+          <CarouselItem
+            key={image.id}
+            className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+          >
+            <GalleryCard
+              image={image}
+              isLoaded={loadedImages.has(image.id)}
+              onLoad={handleImageLoad}
+              onClick={() => handleImageClick(index)}
+            />
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    );
+  };
 
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-white">
@@ -83,29 +129,22 @@ export default function Gallery({ isVisible = true }: GalleryGridProps) {
         <div className="gallery-slider">
           <Carousel
             className="w-full"
-            plugins={[
-              Autoplay({
-                delay: 2000,
-                stopOnInteraction: false,
-                stopOnMouseEnter: true,
-              }),
-            ]}
+            opts={{
+              loop: !isLoading && images.length > 0,
+            }}
+            plugins={
+              !isLoading && images.length > 0
+                ? [
+                    Autoplay({
+                      delay: 2000,
+                      stopOnInteraction: false,
+                      stopOnMouseEnter: true,
+                    }),
+                  ]
+                : []
+            }
           >
-            <CarouselContent className="-ml-2 md:-ml-4">
-              {image.map((image, index) => (
-                <CarouselItem
-                  key={image.id}
-                  className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
-                >
-                  <GalleryCard
-                    image={image}
-                    isLoaded={loadedImages.has(image.id)}
-                    onLoad={handleImageLoad}
-                    onClick={() => handleImageClick(index)}
-                  />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
+            {isLoading ? renderSkeletons() : renderGallery()}
             <CarouselPrevious className="hidden md:flex" />
             <CarouselNext className="hidden md:flex" />
           </Carousel>
@@ -113,7 +152,7 @@ export default function Gallery({ isVisible = true }: GalleryGridProps) {
 
         {selectedImageIndex !== null && (
           <ImageModal
-            images={image}
+            images={images}
             currentImageIndex={selectedImageIndex}
             onClose={handleCloseModal}
             onNext={handleNextImage}

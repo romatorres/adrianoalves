@@ -4,6 +4,7 @@ import { Team as TeamMemberType } from "@/lib/types";
 import Image from "next/image";
 import TeamMember from "./_components/TeamCard";
 import { useEffect, useState } from "react";
+import { TeamCardSkeleton } from "./_components/TeamCardSkeleton";
 
 interface TeamGridProps {
   isVisible?: boolean;
@@ -11,15 +12,19 @@ interface TeamGridProps {
 
 export default function Team({ isVisible = true }: TeamGridProps) {
   const [members, setMembers] = useState<TeamMemberType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTeam = async () => {
+      setIsLoading(true);
       try {
         const res = await fetch("/api/team");
         const data = await res.json();
         setMembers(data);
       } catch (error) {
         console.error("Failed to fetch team members:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -29,6 +34,33 @@ export default function Team({ isVisible = true }: TeamGridProps) {
   }, [isVisible]);
 
   if (!isVisible) return null;
+
+  const activeMembers = members.filter((member) => member.active);
+
+  const renderSkeletons = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <TeamCardSkeleton key={index} />
+      ))}
+    </div>
+  );
+
+  const renderTeam = () => {
+    if (activeMembers.length === 0) {
+      return (
+        <div className="text-center text-gray-600 py-10">
+          Nenhum membro da equipe encontrado.
+        </div>
+      );
+    }
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {activeMembers.map((member) => (
+          <TeamMember key={member.id} member={member} />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-gray-50">
@@ -51,13 +83,7 @@ export default function Team({ isVisible = true }: TeamGridProps) {
           para oferecer o melhor em serviços de barbearia, manicure e salão de
           beleza, unisex.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {members
-            .filter((member) => member.active)
-            .map((member) => (
-              <TeamMember key={member.id} member={member} />
-            ))}
-        </div>
+        {isLoading ? renderSkeletons() : renderTeam()}
         <div className="flex flex-col sm:flex-row justify-center gap-6 sm:space-x-6 mt-16">
           <a
             href="https://cashbarber.com.br/barbeariaadrianoalves/login"
