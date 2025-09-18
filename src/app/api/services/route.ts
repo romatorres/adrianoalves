@@ -36,9 +36,15 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const showAll = searchParams.get("showAll") === "true";
+
+    const whereClause = showAll ? {} : { active: true };
+
     const services = await prisma.service.findMany({
+      where: whereClause,
       select: {
         id: true,
         name: true,
@@ -49,13 +55,14 @@ export async function GET() {
         imageUrl: true,
       },
     });
-    
+
     // Convert Decimal to number for JSON serialization
-    const serializedServices = services.map(service => ({
+    const serializedServices = services.map((service) => ({
       ...service,
-      price: service.price instanceof Decimal ? service.price.toNumber() : service.price,
+      price:
+        service.price instanceof Decimal ? service.price.toNumber() : service.price,
     }));
-    
+
     return NextResponse.json(serializedServices);
   } catch (error) {
     console.error("Error fetching services:", error);

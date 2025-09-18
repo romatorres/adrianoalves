@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       },
     });
     return NextResponse.json(newPromotion, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { message: "Erro ao criar uma Promoção." },
       { status: 500 }
@@ -57,13 +57,13 @@ export async function GET() {
     });
 
     // Converter valores Decimal para número
-    const formattedPromotions = promotions.map(promotion => ({
+    const formattedPromotions = promotions.map((promotion) => ({
       ...promotion,
-      discount: promotion.discount ? Number(promotion.discount) : null
+      discount: promotion.discount ? Number(promotion.discount) : null,
     }));
 
     return NextResponse.json(formattedPromotions);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { message: "Erro ao buscar uma promoção." },
       { status: 500 }

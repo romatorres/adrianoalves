@@ -52,7 +52,9 @@ export async function updatePromotion(
   promotionId: string,
   data: Partial<PromotionFormData>
 ) {
-  const session = await auth.api.getSession({ headers: headers() });
+  const headerList = await headers();
+  const newHeaders = new Headers(headerList);
+  const session = await auth.api.getSession({ headers: newHeaders });
   if (!session) {
     return { success: false, message: "Não autorizado." };
   }
@@ -106,7 +108,9 @@ export async function updatePromotion(
 }
 
 export async function deletePromotion(promotionId: string) {
-  const session = await auth.api.getSession({ headers: headers() });
+  const headerList = await headers();
+  const newHeaders = new Headers(headerList);
+  const session = await auth.api.getSession({ headers: newHeaders });
   if (!session) {
     return { success: false, message: "Não autorizado." };
   }

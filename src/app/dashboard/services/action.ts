@@ -5,7 +5,7 @@ import { Service } from "@/lib/types";
 
 export async function getServices(): Promise<Service[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/services`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/services?showAll=true`, {
       cache: "no-store",
     });
     if (!res.ok) {
@@ -35,6 +35,7 @@ export async function createService(data: Omit<Service, "id">) {
     }
 
     revalidatePath("/dashboard/services");
+    revalidatePath("/");
     return { success: true, data: await res.json() };
   } catch (error) {
     console.error("Erro ao criar o serviço:", error);
@@ -67,6 +68,7 @@ export async function updateService(
     }
 
     revalidatePath("/dashboard/services");
+    revalidatePath("/");
     return { success: true, data: await res.json() };
   } catch (error) {
     console.error("Erro ao atualizar o serviço:", error);
@@ -92,6 +94,7 @@ export async function deleteService(serviceId: string) {
     }
 
     revalidatePath("/dashboard/services");
+    revalidatePath("/");
     return { success: true };
   } catch (error) {
     console.error("Erro ao deletar o serviço:", error);

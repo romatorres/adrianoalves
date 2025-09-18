@@ -1,4 +1,3 @@
-
 import { UTApi } from "uploadthing/server";
 import { auth } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -24,7 +23,7 @@ export async function POST(req: NextRequest) {
   try {
     await utapi.deleteFiles(fileKey);
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Erro ao deletar o arquivo" },
       { status: 500 }
