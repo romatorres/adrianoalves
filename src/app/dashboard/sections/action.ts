@@ -43,6 +43,7 @@ export async function updateSectionStatus(id: string, active: boolean) {
       data: { active },
     });
     revalidatePath("/dashboard/sections");
+    revalidatePath("/");
     return { success: true };
   } catch (error) {
     console.error("Error updating section status:", error);
