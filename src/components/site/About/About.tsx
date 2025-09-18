@@ -84,13 +84,8 @@ export function About() {
         </div>
       </div>
       {/* Nossa Historia */}
-      <div className="bg-black-secondary w-full">
+      <div className="bg-[#211E17] w-full">
         <div className="relative mx-auto max-w-[1280px] px-4 md:px-6">
-          {/* 
-            This container provides the vertical padding for the section.
-            On mobile (default), it has a large padding-bottom to create space for the absolutely positioned image.
-            On desktop (lg), the bottom padding is reduced because the image moves to the side.
-          */}
           <div className="pt-12 pb-[480px] md:pt-16 lg:pt-20 lg:pb-20">
             <div className="w-full text-center lg:w-[60%] lg:text-left">
               <h3 className="text-2xl font-secondary font-semibold text-primary mb-8 md:text-4xl">
@@ -122,7 +117,6 @@ export function About() {
             </div>
           </div>
 
-          {/* The image is positioned absolutely relative to the container above. */}
           <div className="absolute bottom-0 left-1/2 h-[412px] w-[320px] -translate-x-1/2 lg:left-auto lg:right-6 lg:translate-x-0">
             <Image
               src="/img/adriano_sobre.png"
