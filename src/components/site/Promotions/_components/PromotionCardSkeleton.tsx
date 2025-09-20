@@ -1,7 +1,7 @@
 export function PromotionCardSkeleton() {
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full flex flex-col h-fit">
-      <div className="relative w-full aspect-square bg-gray-200 animate-pulse"></div>
+      <div className="relative w-full aspect-video bg-gray-200 animate-pulse"></div>
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex-grow">
           <div className="h-8 w-3/4 rounded bg-gray-200 animate-pulse mb-4"></div>

@@ -10,7 +10,7 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full flex flex-col h-fit">
       {promotion.imageUrl && (
-        <div className="relative w-full aspect-square flex-shrink-0">
+        <div className="relative w-full aspect-video flex-shrink-0">
           <Image
             src={promotion.imageUrl}
             alt={promotion.title}

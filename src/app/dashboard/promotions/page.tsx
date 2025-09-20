@@ -114,7 +114,7 @@ export default function Promotions() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
-                  <div className="relative aspect-[4/3] w-full mb-4">
+                  <div className="relative aspect-video w-full mb-4">
                     <Image
                       src={promotion.imageUrl || "/img/default-service.jpg"}
                       alt={promotion.title}
