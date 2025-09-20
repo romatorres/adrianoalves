@@ -63,7 +63,7 @@ export default function Team({ isVisible = true }: TeamGridProps) {
   };
 
   return (
-    <section className="py-12 md:py-16 lg:py-20 bg-gray-50">
+    <section className="py-12 md:py-16 lg:py-20 bg-white">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6">
         <div className="mb-16 md:mb-20 flex flex-col items-center">
           <h2 className="text-3xl md:text-6xl font-primary font-normal text-background mb-3">

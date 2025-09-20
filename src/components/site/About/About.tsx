@@ -84,7 +84,7 @@ export function About() {
         </div>
       </div>
       {/* Nossa Historia */}
-      <div className="bg-[#211E17] w-full">
+      <div className="bg-black-secondary w-full">
         <div className="relative mx-auto max-w-[1280px] px-4 md:px-6">
           <div className="pt-12 pb-[480px] md:pt-16 lg:pt-20 lg:pb-20">
             <div className="w-full text-center lg:w-[60%] lg:text-left">
