@@ -117,7 +117,7 @@ export function About() {
             </div>
           </div>
 
-          <div className="absolute bottom-0 left-1/2 h-[412px] w-[320px] -translate-x-1/2 lg:left-auto lg:right-6 lg:translate-x-0">
+          <div className="absolute bottom-0 left-1/2 h-[478px] w-[366px] -translate-x-1/2 lg:left-auto lg:right-6 lg:translate-x-0">
             <Image
               src="/img/adriano_sobre.png"
               alt="Fundador da Barbearia"
