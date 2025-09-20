@@ -1,6 +1,6 @@
-/* import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { Decimal } from '@prisma/client/runtime/library';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { Decimal } from "@prisma/client/runtime/library";
 
 export async function POST(request: Request) {
   try {
@@ -8,21 +8,21 @@ export async function POST(request: Request) {
     const { name, description, price, imageUrl, active } = body;
 
     if (!name || price === undefined) {
-        return NextResponse.json(
-            { message: "Todos os campos são obrigatórios." },
+      return NextResponse.json(
+        { message: "Todos os campos são obrigatórios." },
         { status: 400 }
-        )
+      );
     }
 
     const newProduct = await prisma.product.create({
-        data: {
-            name,
-            description,
-            price: new Decimal(price), // Convert to Decimal
-            imageUrl,
-            active: Boolean(active),
-        }
-    })
+      data: {
+        name,
+        description,
+        price: new Decimal(price), // Convert to Decimal
+        imageUrl,
+        active: Boolean(active),
+      },
+    });
 
     return NextResponse.json(newProduct, { status: 201 });
   } catch (error) {
@@ -33,9 +33,8 @@ export async function POST(request: Request) {
     );
   }
 }
-   */
 
-/* export async function GET(request: Request) {
+export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const showAll = searchParams.get("showAll") === "true";
@@ -70,4 +69,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-} */
+}
