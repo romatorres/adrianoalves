@@ -2,6 +2,9 @@ import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 
+console.log("UPLOADTHING_SECRET:", process.env.UPLOADTHING_SECRET ? "Presente" : "Ausente ou Vazio");
+console.log("UPLOADTHING_APP_ID:", process.env.UPLOADTHING_APP_ID ? "Presente" : "Ausente ou Vazio");
+
 const f = createUploadthing();
 
 export const ourFileRouter = {
