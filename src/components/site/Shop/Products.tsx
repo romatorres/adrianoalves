@@ -13,7 +13,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { Product } from "@/lib/types";
 
 interface ProductGridProps {
-  products: Product[];
+  products?: Product[];
   isVisible?: boolean;
 }
 
@@ -32,7 +32,7 @@ export function Products({
       </div>
     </section>
   ) : (
-    <section className="py-10 md:py-16 bg-white">
+    <section className="py-10 md:py-16 bg-gray04">
       <div className="max-w-[1280px] mx-auto px-2 md:px-6">
         <div className="mb-12 md:mb-16 flex flex-col items-center">
           <h2 className="text-3xl md:text-6xl font-primary font-normal text-background mb-3">

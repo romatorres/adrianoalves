@@ -95,7 +95,7 @@ export default function Products() {
               Gerencie todos os produtos do sistema
             </p>
           </div>
-          <Link href={"/dashboard/promotions/new/"} className="md:w-fit w-full">
+          <Link href={"/dashboard/products/new/"} className="md:w-fit w-full">
             <Button className="w-full">
               <Plus />
               Produtos

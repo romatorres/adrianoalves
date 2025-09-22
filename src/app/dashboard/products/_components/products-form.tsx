@@ -31,6 +31,7 @@ const formSchema = z.object({
   name: z
     .string()
     .min(3, { message: "O título deve ter pelo menos 3 caracteres" }),
+  price: z.number().optional().nullable(),
   description: z.string().optional().nullable(),
   imageUrl: z.string().url("URL da imagem inválida").optional().nullable(),
   active: z.boolean(),
@@ -54,6 +55,7 @@ export function ProductsForm({ product, onSuccess, onCancel }: ProductsProps) {
     defaultValues: {
       name: "",
       description: "",
+      price: null,
       imageUrl: "",
       active: true,
     },
@@ -63,9 +65,12 @@ export function ProductsForm({ product, onSuccess, onCancel }: ProductsProps) {
 
   useEffect(() => {
     if (product) {
+      const priceValue = product.price ? Number(product.price) : null;
+
       reset({
         name: product.name,
         description: product.description,
+        price: priceValue,
         imageUrl: product.imageUrl,
         active: product.active ?? true,
       });
@@ -82,7 +87,7 @@ export function ProductsForm({ product, onSuccess, onCancel }: ProductsProps) {
       imageUrl: formData.imageUrl ?? "",
       active: formData.active,
       id: "",
-      price: 0,
+      price: formData.price ?? 0,
     };
 
     try {
@@ -142,6 +147,30 @@ export function ProductsForm({ product, onSuccess, onCancel }: ProductsProps) {
                     <Input
                       placeholder="Ex: Desconto de Verão"
                       {...field}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Preço</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Ex: 29.90"
+                      {...field}
+                      value={field.value ?? ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(value === "" ? null : Number(value));
+                      }}
                       disabled={isLoading}
                     />
                   </FormControl>
