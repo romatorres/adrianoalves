@@ -1,6 +1,6 @@
 "use client";
 
-/* import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,125 +19,112 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { createProducts, updateProducts } from "../action"; 
+import { createProducts, updateProducts } from "../actions";
 import { Product } from "@/lib/types";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { UploadDropzone } from "@/components/ui/upload-button";
-import { deleteFile } from "@/lib/uploadthing-actions"; */
+import { deleteFile } from "@/lib/uploadthing-actions";
 
 // Schema using string for dates to avoid timezone issues within the form
-/* const formSchema = z.object({
-  title: z
+const formSchema = z.object({
+  name: z
     .string()
     .min(3, { message: "O título deve ter pelo menos 3 caracteres" }),
   description: z.string().optional().nullable(),
-  discount: z.number().optional().nullable(),
   imageUrl: z.string().url("URL da imagem inválida").optional().nullable(),
   active: z.boolean(),
-}); */
+});
 
-/* type FormValues = z.infer<typeof formSchema>; */
+type FormValues = z.infer<typeof formSchema>;
 
-/* interface ProductsProps {
-  promotion?: Product | null;
+interface ProductsProps {
+  product?: Product | null;
   onSuccess?: () => void;
   onCancel?: () => void;
-} */
+}
 
-export function ProductsForm(
-  {
-    /*  promotion,
-  onSuccess,
-  onCancel, */
-  } /* : ProductsProps */
-) {
-  /* const [isLoading, setIsLoading] = useState(false);
+export function ProductsForm({ product, onSuccess, onCancel }: ProductsProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const isEditMode = !!promotion; */
+  const isEditMode = !!product;
 
-  /* const form = useForm<FormValues>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
+      name: "",
       description: "",
       imageUrl: "",
-      discount: null,
       active: true,
     },
   });
 
-  const { reset } = form; */
+  const { reset } = form;
 
-  /* useEffect(() => {
-    if (promotion) {
-      const discountValue =
-        typeof promotion.discount === "object" && promotion.discount !== null
-          ? promotion.discount.toNumber()
-          : promotion.discount;
-
+  useEffect(() => {
+    if (product) {
       reset({
-        title: promotion.title,
-        description: promotion.description,
-        imageUrl: promotion.imageUrl,
-        discount: discountValue,
-        active: promotion.active ?? true,
+        name: product.name,
+        description: product.description,
+        imageUrl: product.imageUrl,
+        active: product.active ?? true,
       });
     }
-  }, [promotion, reset]); */
+  }, [product, reset]);
 
-  /* async function onSubmit(formData: FormValues) {
-    setIsLoading(true); */
+  async function onSubmit(formData: FormValues) {
+    setIsLoading(true);
 
-  // Convert date strings back to Date objects in local timezone for submission
-  /* const dataToSend: ProductsFormData = {
-      title: formData.title.trim(),
-      description: formData.description || null,
-      imageUrl: formData.imageUrl || null,
-      discount: formData.discount ?? null,
+    // Convert date strings back to Date objects in local timezone for submission
+    const dataToSend: Product = {
+      name: formData.name.trim(),
+      description: formData.description ?? "",
+      imageUrl: formData.imageUrl ?? "",
       active: formData.active,
-    }; */
+      id: "",
+      price: 0,
+    };
 
-  /* try {
-      if (isEditMode && promotion) {
-        const result = await updatePromotion(promotion.id, dataToSend);
+    try {
+      if (isEditMode && product) {
+        const result = await updateProducts(product.id, dataToSend);
         if (result.success) {
-          toast.success("Promoção atualizada com sucesso!");
+          toast.success("Produto atualizado com sucesso!");
           if (onSuccess) onSuccess();
         } else {
-          toast.error(result.message || "Erro ao atualizar promoção");
+          toast.error(result.message || "Erro ao atualizar o produto");
         }
       } else {
-        const result = await createPromotion(dataToSend);
+        const result = await createProducts(dataToSend);
         if (result.success) {
-          toast.success("Promoção cadastrada com sucesso!");
+          toast.success("Produto cadastrado com sucesso!");
           form.reset();
           if (onSuccess) {
             onSuccess();
           } else {
-            router.replace("/dashboard/promotions");
+            router.replace("/dashboard/products");
           }
         } else {
-          toast.error(result.message || "Erro ao cadastrar uma promoção");
+          toast.error(result.message || "Erro ao cadastrar um produto");
         }
       }
     } catch {
       toast.error("Ocorreu um erro inesperado.");
     } finally {
       setIsLoading(false);
-    } 
+    }
   }
-*/
-  /*  const handleCancel = () => {
+
+  const handleCancel = () => {
     if (onCancel) {
       onCancel();
     } else {
-      router.replace("/dashboard/promotions");
+      router.replace("/dashboard/products");
     }
   };
- */
-  return {
-    /* <div
+
+  return (
+    <div
       className={
         !isEditMode ? "bg-amber-100 shadow overflow-hidden sm:rounded-md" : ""
       }
@@ -147,10 +134,10 @@ export function ProductsForm(
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="title"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Título da Promoção</FormLabel>
+                  <FormLabel>Título do Produto</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Ex: Desconto de Verão"
@@ -171,7 +158,7 @@ export function ProductsForm(
                   <FormLabel>Descrição</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Fale sobre a promoção..."
+                      placeholder="Fale sobre o produto..."
                       {...field}
                       value={field.value ?? ""} // Handle null value
                       disabled={isLoading}
@@ -187,7 +174,7 @@ export function ProductsForm(
               name="imageUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Imagem da Promoção</FormLabel>
+                  <FormLabel>Imagem do Produto</FormLabel>
                   <FormControl>
                     <div className="min-h-[40px]">
                       {field.value ? (
@@ -251,30 +238,6 @@ export function ProductsForm(
 
             <FormField
               control={form.control}
-              name="discount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Desconto (%)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="10"
-                      {...field}
-                      value={field.value ?? ""}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        field.onChange(value ? Number(value) : null);
-                      }}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
               name="active"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray03 p-3 shadow-sm">
@@ -306,18 +269,18 @@ export function ProductsForm(
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {isEditMode ? "Salvando..." : "Cadastrar Promoção"}
+                    {isEditMode ? "Salvando..." : "Cadastrar Produto"}
                   </>
                 ) : isEditMode ? (
                   "Salvar Alterações"
                 ) : (
-                  "Cadastrar Promoção"
+                  "Cadastrar Produto"
                 )}
               </Button>
             </div>
           </form>
         </Form>
       </div>
-    </div> */
-  };
+    </div>
+  );
 }
