@@ -11,36 +11,9 @@ import { Contact } from "@/components/site/Contact/Contact";
 import { Footer } from "@/components/site/Footer/Footer";
 import { About } from "@/components/site/About/About";
 import { useSectionData } from "@/components/SectionDataProvider";
-import { useEffect, useState } from "react";
-import { Product } from "@/lib/types";
 
 export default function Home() {
   const sectionsMap = useSectionData();
-  const [products, setProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("/api/products");
-        if (response.ok) {
-          const data = await response.json();
-          const formattedProducts = data.map((product: any) => ({
-            ...product,
-            price: Number(product.price),
-          }));
-          setProducts(formattedProducts);
-        } else {
-          console.error("Failed to fetch products");
-          setProducts([]);
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setProducts([]);
-      }
-    };
-
-    fetchProducts();
-  }, []);
 
   return (
     <main>
@@ -54,8 +27,8 @@ export default function Home() {
       <section id="about">
         <About />
       </section>
-      <section id="shop">
-        <Products products={products} isVisible={sectionsMap.products} />
+      <section id="products">
+        <Products isVisible={sectionsMap.products} />
       </section>
       <section id="team">
         <Team isVisible={sectionsMap.team} />

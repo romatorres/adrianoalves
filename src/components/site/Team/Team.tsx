@@ -53,8 +53,19 @@ export default function Team({ isVisible = true }: TeamGridProps) {
         </div>
       );
     }
+
+    const getGridCols = (count: number) => {
+      if (count === 1)
+        return "grid-cols-1 justify-items-center max-w-sm mx-auto";
+      if (count === 2)
+        return "grid-cols-1 md:grid-cols-2 justify-items-center max-w-2xl mx-auto";
+      if (count === 3)
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center max-w-4xl mx-auto";
+      return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center max-w-6xl mx-auto";
+    };
+
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className={`grid ${getGridCols(activeMembers.length)} gap-4`}>
         {activeMembers.map((member) => (
           <TeamMember key={member.id} member={member} />
         ))}

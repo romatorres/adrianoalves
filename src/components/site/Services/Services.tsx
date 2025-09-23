@@ -44,7 +44,7 @@ export function Services({ isVisible = true }: ServiceGridProps) {
   if (!isVisible) return null;
 
   const renderSkeletons = () => (
-    <CarouselContent className="-ml-2 md:-ml-4">
+    <CarouselContent className="-ml-2 md:-ml-4 justify-center">
       {Array.from({ length: 4 }).map((_, index) => (
         <CarouselItem
           key={index}

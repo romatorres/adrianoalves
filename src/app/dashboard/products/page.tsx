@@ -104,21 +104,28 @@ export default function Products() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 justify-items-center sm:justify-items-start place-items-center sm:place-items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {products.map((product: Product) => (
             <div
               key={product.id}
-              className="bg-amber-100 rounded-lg shadow-sm border border-gray-200 p-3 max-w-120 w-full flex flex-col"
+              className="bg-amber-100 rounded-lg shadow-sm border border-gray-200 p-3 max-w-sm w-full flex flex-col"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
-                  <div className="relative aspect-[4/3] w-full mb-4">
-                    <Image
-                      src={product.imageUrl || "/img/default-service.jpg"}
-                      alt={product.name}
-                      fill
-                      className="rounded-lg object-cover"
-                    />
+                  <div className="relative flex min-h-[290px] w-full flex-col justify-center">
+                    <div className="absolute inset-2 rounded-2xl sm:rounded-3xl bg-[#fff] shadow-inner">
+                      <div className="relative w-full h-full flex items-center justify-center">
+                        <div className="relative w-full h-full max-w-[160px] max-h-[160px] sm:max-w-[200px] sm:max-h-[200px]">
+                          <Image
+                            src={product.imageUrl || "/img/default-service.jpg"}
+                            alt={product.name}
+                            fill
+                            className="object-contain"
+                            sizes="(max-width: 640px) 160px, 200px"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div className="flex items-center mb-3">
                     <div>

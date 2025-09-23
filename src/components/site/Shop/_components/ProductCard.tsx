@@ -45,12 +45,12 @@ export function ProductCard({ product }: { product: Product }) {
 
           <div className="flex flex-col gap-2 mt-auto">
             <Link
-              href="https://wa.me/75988460046"
+              href="https://wa.me/75988460046?text=Olá!%20Vi%20seu%20site%20e%20gostaria%20de%20mais%20informações."
               target="_blank"
               className="w-full bg-primary text-foreground py-2.5 sm:py-3 px-3 sm:px-4 rounded-full hover:bg-primary-hover border-primary border-[1px] flex items-center justify-center gap-2 font-semibold text-xs sm:text-sm transition-colors duration-300"
             >
               <ShoppingCart size={20} />
-              <span className="text-lg font-tertiary">Consulte</span>
+              <span className="text-lg font-tertiary">Comprar</span>
             </Link>
           </div>
         </div>
