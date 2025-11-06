@@ -56,7 +56,7 @@ export function Promotions({ isVisible = true }: PromotionGridProps) {
       <div
         className={`grid gap-6 ${
           promotions.length === 1
-            ? "grid-cols-1 justify-items-center [&>*]:max-w-[50%]"
+            ? "grid-cols-1"
             : "grid-cols-1 md:grid-cols-2"
         }`}
       >

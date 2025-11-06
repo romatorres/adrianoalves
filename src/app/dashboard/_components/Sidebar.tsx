@@ -115,7 +115,7 @@ export default function Sidebar() {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="h-full flex flex-col px-3 py-0 overflow-y-auto bg-amber-100 border-r w-64">
+        <div className="h-full flex flex-col px-3 py-0 bg-amber-100 border-r w-64">
           {/* Perfil do usuário */}
           <div className="mb-6 p-4 border-b border-gray01 flex justify-end md:justify-start ">
             <div className="flex flex-row items-center gap-3">
@@ -134,72 +134,74 @@ export default function Sidebar() {
           </div>
 
           {/* Menu principal */}
-          <ul className="space-y-2 flex-1">
-            {menuItems.map((item) => {
-              const isActive = item.href ? pathname === item.href : false;
-              const hasSubmenu = "subItems" in item;
-              const isSubmenuOpen = openSubmenu === item.name;
+          <div className="flex-1 overflow-y-auto">
+            <ul className="space-y-2">
+              {menuItems.map((item) => {
+                const isActive = item.href ? pathname === item.href : false;
+                const hasSubmenu = "subItems" in item;
+                const isSubmenuOpen = openSubmenu === item.name;
 
-              return (
-                <li key={item.name}>
-                  {hasSubmenu ? (
-                    <div>
-                      <button
-                        onClick={() => toggleSubmenu(item.name)}
-                        className={`w-full flex items-center justify-between p-2 rounded-lg hover:bg-gray04 text-gray-01`}
-                      >
-                        <div className="flex items-center">
-                          <item.icon className="w-6 h-6 mr-2" />
-                          <span>{item.name}</span>
-                        </div>
-                        {isSubmenuOpen ? (
-                          <ChevronDown className="w-4 h-4" />
-                        ) : (
-                          <ChevronRight className="w-4 h-4" />
+                return (
+                  <li key={item.name}>
+                    {hasSubmenu ? (
+                      <div>
+                        <button
+                          onClick={() => toggleSubmenu(item.name)}
+                          className={`w-full flex items-center justify-between p-2 rounded-lg hover:bg-gray04 text-gray-01`}
+                        >
+                          <div className="flex items-center">
+                            <item.icon className="w-6 h-6 mr-2" />
+                            <span>{item.name}</span>
+                          </div>
+                          {isSubmenuOpen ? (
+                            <ChevronDown className="w-4 h-4" />
+                          ) : (
+                            <ChevronRight className="w-4 h-4" />
+                          )}
+                        </button>
+                        {isSubmenuOpen && item.subItems && (
+                          <ul className="ml-6 mt-2 space-y-2">
+                            {item.subItems.map((subItem) => {
+                              const isSubItemActive = pathname === subItem.href;
+                              return (
+                                <li key={subItem.name}>
+                                  <Link
+                                    href={subItem.href}
+                                    className={`flex items-center p-2 rounded-lg hover:bg-gray04 ${
+                                      isSubItemActive
+                                        ? "bg-gray04 text-background"
+                                        : "text-gray-01"
+                                    }`}
+                                    onClick={() => setIsSidebarOpen(false)}
+                                  >
+                                    <subItem.icon className="w-5 h-5 mr-2" />
+                                    <span>{subItem.name}</span>
+                                  </Link>
+                                </li>
+                              );
+                            })}
+                          </ul>
                         )}
-                      </button>
-                      {isSubmenuOpen && item.subItems && (
-                        <ul className="ml-6 mt-2 space-y-2">
-                          {item.subItems.map((subItem) => {
-                            const isSubItemActive = pathname === subItem.href;
-                            return (
-                              <li key={subItem.name}>
-                                <Link
-                                  href={subItem.href}
-                                  className={`flex items-center p-2 rounded-lg hover:bg-gray04 ${
-                                    isSubItemActive
-                                      ? "bg-gray04 text-background"
-                                      : "text-gray-01"
-                                  }`}
-                                  onClick={() => setIsSidebarOpen(false)}
-                                >
-                                  <subItem.icon className="w-5 h-5 mr-2" />
-                                  <span>{subItem.name}</span>
-                                </Link>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      )}
-                    </div>
-                  ) : (
-                    <Link
-                      href={item.href!}
-                      className={`flex items-center p-2 rounded-lg hover:bg-gray04 ${
-                        isActive
-                          ? "bg-amber-100 text-background"
-                          : "text-gray-01"
-                      }`}
-                      onClick={() => setIsSidebarOpen(false)}
-                    >
-                      <item.icon className="w-6 h-6 mr-2" />
-                      <span>{item.name}</span>
-                    </Link>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+                      </div>
+                    ) : (
+                      <Link
+                        href={item.href!}
+                        className={`flex items-center p-2 rounded-lg hover:bg-gray04 ${
+                          isActive
+                            ? "bg-amber-100 text-background"
+                            : "text-gray-01"
+                        }`}
+                        onClick={() => setIsSidebarOpen(false)}
+                      >
+                        <item.icon className="w-6 h-6 mr-2" />
+                        <span>{item.name}</span>
+                      </Link>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
 
           {/* Botão de logout */}
           <div className="border-t border-gray01 py-4 flex-shrink-0">

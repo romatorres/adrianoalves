@@ -20,7 +20,13 @@ async function getSectionsMap() {
     return sectionsMap;
   } catch (error) {
     console.error("Error fetching sections for layout:", error);
-    return { gallery: true, products: true, promotions: true, services: true, team: true };
+    return {
+      gallery: true,
+      products: true,
+      promotions: true,
+      services: true,
+      team: true,
+    };
   }
 }
 
@@ -62,6 +68,7 @@ export default async function RootLayout({
     <html lang="pt-BR">
       <body
         className={`${pollerOne.variable} ${ubuntu.variable} ${nunito.variable} ${bebasNeue.variable} antialiased`}
+        cz-shortcut-listen="true"
       >
         <SectionDataProvider initialData={sectionsMap}>
           {children}
