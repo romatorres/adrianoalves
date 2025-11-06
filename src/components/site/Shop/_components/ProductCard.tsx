@@ -12,10 +12,10 @@ export function ProductCard({ product }: { product: Product }) {
   }).format(product.price as number);
 
   return (
-    <div className="w-full max-w-xs sm:max-w-sm md:max-w-[300px]">
+    <div className="mx-auto flex h-full max-w-sm flex-col overflow-hidden ">
       <div className="rounded-3xl shadow-md overflow-hidden flex flex-col min-h-[460px] sm:min-h-[480px] transition-transform duration-300 ease-in-out hover:translate-y-[-5px] bg-secondary">
-        <div className="relative min-h-[260px] w-full p-2">
-          <div className="relative w-full h-full min-h-[240px]">
+        <div className="relative min-h-[340px] w-full p-2">
+          <div className="relative w-full h-full min-h-[320px]">
             <Image
               src={product.imageUrl || ""}
               alt={product.name}

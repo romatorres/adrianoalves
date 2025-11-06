@@ -63,15 +63,15 @@ export default function TeamMember({ member }: TeamMemberProps) {
       </div>
 
       {/* Informações do membro */}
-      <div className="absolute bottom-0 left-0 right-0 py-3 px-4 bg-black/40 border-none transform translate-y-6 group-hover:translate-y-0 transition-transform duration-300">
+      <div className="absolute bottom-6 left-0 right-0 py-3 px-4 bg-black/40 border-none transform translate-y-6 transition-transform duration-300">
         <div className="space-y-1">
           <h3 className="text-xl font-bold text-white">{member.name}</h3>
-          {/* <p className="text-sm text-gray-200">{member.role}</p> */}
-          {member.bio && (
+          <p className="text-sm text-gray-200">{member.bio}</p>
+          {/* {member.bio && (
             <p className="text-sm text-gray-300 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
               {member.bio}
             </p>
-          )}
+          )} */}
         </div>
       </div>
     </div>
