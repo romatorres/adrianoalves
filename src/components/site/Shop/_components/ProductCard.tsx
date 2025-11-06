@@ -14,20 +14,16 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <div className="w-full max-w-xs sm:max-w-sm md:max-w-[300px]">
       <div className="rounded-3xl shadow-md overflow-hidden flex flex-col min-h-[460px] sm:min-h-[480px] transition-transform duration-300 ease-in-out hover:translate-y-[-5px] bg-secondary">
-        <div className="relative flex min-h-[220px] sm:min-h-[260px] w-full flex-col justify-center p-2">
-          <div className="absolute inset-2 rounded-2xl sm:rounded-3xl bg-[#fff] shadow-inner">
-            <div className="relative w-full h-full flex items-center justify-center p-3 sm:p-4">
-              <div className="relative w-full h-full max-w-[160px] max-h-[160px] sm:max-w-[200px] sm:max-h-[200px]">
-                <Image
-                  src={product.imageUrl || ""}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 640px) 160px, 200px"
-                  style={{ objectFit: "contain" }}
-                  className="rounded-lg"
-                />
-              </div>
-            </div>
+        <div className="relative min-h-[260px] w-full p-2">
+          <div className="relative w-full h-full min-h-[240px]">
+            <Image
+              src={product.imageUrl || ""}
+              alt={product.name}
+              fill
+              sizes="(max-width: 640px) 160px, 200px"
+              style={{ objectFit: "cover" }}
+              className="rounded-2xl"
+            />
           </div>
         </div>
 

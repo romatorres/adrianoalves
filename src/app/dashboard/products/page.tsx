@@ -112,21 +112,19 @@ export default function Products() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
-                  <div className="relative flex min-h-[290px] w-full flex-col justify-center">
-                    <div className="absolute inset-2 rounded-2xl sm:rounded-3xl bg-[#fff] shadow-inner">
-                      <div className="relative w-full h-full flex items-center justify-center">
-                        <div className="relative w-full h-full max-w-[160px] max-h-[160px] sm:max-w-[200px] sm:max-h-[200px]">
-                          <Image
-                            src={product.imageUrl || "/img/default-service.jpg"}
-                            alt={product.name}
-                            fill
-                            className="object-contain"
-                            sizes="(max-width: 640px) 160px, 200px"
-                          />
-                        </div>
-                      </div>
+                  <div className="relative min-h-[220px] sm:min-h-[320px] w-full">
+                    <div className="relative w-full h-full min-h-[196px] sm:min-h-[300px]">
+                      <Image
+                        src={product.imageUrl || ""}
+                        alt={product.name}
+                        fill
+                        sizes="(max-width: 640px) 160px, 200px"
+                        style={{ objectFit: "cover" }}
+                        className="rounded-2xl"
+                      />
                     </div>
                   </div>
+
                   <div className="flex items-center mb-3">
                     <div>
                       <p className="font-semibold text-background text-xl">
